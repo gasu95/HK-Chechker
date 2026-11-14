@@ -1,0 +1,21 @@
+# Build artifacts
+HKChecker.elf
+HKChecker.nacp
+HKChecker.map
+HKChecker.lst
+build/
+
+# Temporary files
+*.py
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Windows
+Thumbs.db
+Desktop.ini
