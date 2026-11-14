@@ -3,11 +3,14 @@ HKChecker.elf
 HKChecker.nacp
 HKChecker.map
 HKChecker.lst
+*.o
+*.d
 build/
 
 # Temporary files
 *.py
 *.log
+source/* - *
 
 # IDE
 .vscode/
