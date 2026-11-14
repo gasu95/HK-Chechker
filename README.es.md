@@ -10,7 +10,7 @@
 
 HKChecker es una **aplicación homebrew para Nintendo Switch** que lee archivos de guardado de Hollow Knight directamente desde el almacenamiento de tu consola y muestra un desglose detallado del porcentaje de completitud del juego. **Funciona completamente sin conexión a internet**, no necesita acceso a red.
 
-Es un puerto y mejora de la popular herramienta web [Hollow Knight Completion Check](https://reznormichael.github.io/hollow-knight-completion-check/) de [ReznoRMichael](https://github.com/ReznoRMichael).
+Es un port de la popular herramienta web [Hollow Knight Completion Check](https://reznormichael.github.io/hollow-knight-completion-check/) de [ReznoRMichael](https://github.com/ReznoRMichael).
 
 ### ✨ Características
 
