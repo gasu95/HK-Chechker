@@ -83,13 +83,13 @@ struct SaveAnalysis {
     int elderbugHintIdx = 0;
 
     std::vector<CheckItem> essentials112;
-    std::vector<CheckItem> essentialsExtra;
-    std::vector<CheckItem> achievementsHints;
+    std::vector<CheckItem> essentialsAchievements;
     std::vector<CheckItem> hunterJournal;
     std::vector<CheckItem> collectibles;
     std::vector<CheckItem> geoCaches;
     std::vector<CheckItem> secrets;
     std::vector<CheckItem> godhome;
+    std::vector<CheckItem> statistics;
 };
 
 inline uint16_t readU16(const uint8_t* p) {
@@ -400,37 +400,23 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
     int vesselFrags = (res.mpReserveMax / 33) * 3 + getInt(pd, "vesselFragments");
 
     res.essentials112 = {
-        makeHeader("--- JEFES PRINCIPALES Y DLC (17%) ---", "--- MAIN & DLC BOSSES (17%) ---"),
+        makeHeader("--- JEFES (14%) ---", "--- BOSSES (14%) ---"),
         {"[P1] Jefe: Falso Caballero", "[P1] Boss: False Knight", "Cruces Olvidados", "Forgotten Crossroads", stBool(getBool(pd, "killedFalseKnight")), "1%"},
-        {"[P1] Jefe: Hornet Protectora", "[P1] Boss: Protectora Hornet", "Sendero Verde", "Greenpath", stBool(getBool(pd, "killedHornet")), "1%"},
-        {"[P1] Jefe: Madre Gruz", "[P1] Boss: Gruz Mother", "Cruces Olvidados", "Forgotten Crossroads", stBool(getBool(pd, "killedBigFly")), "1%"},
+        {"[P1] Jefe: Hornet Protectora", "[P1] Boss: Protector Hornet", "Sendero Verde", "Greenpath", stBool(getBool(pd, "killedHornet")), "1%"},
+        {"[P1] Jefe: Madre Gruz", "[P1] Boss: Mother Gruz", "Cruces Olvidados", "Forgotten Crossroads", stBool(getBool(pd, "killedBigFly")), "1%"},
         {"[P1] Jefe: Mawlek Incubador", "[P1] Boss: Brooding Mawlek", "Cruces Olvidados", "Forgotten Crossroads", stBool(getBool(pd, "killedMawlek")), "1%"},
         {"[P2] Jefe: Señores Mantis", "[P2] Boss: Mantis Lords", "Aldea Mantis", "Mantis Village", stBool(getBool(pd, "defeatedMantisLords")), "1%"},
         {"[P1] Jefe: Maestro de Almas", "[P1] Boss: Soul Master", "Santuario de Almas", "Soul Sanctum", stBool(getBool(pd, "killedMageLord")), "1%"},
         {"[P1] Jefe: Defensor del Estiércol", "[P1] Boss: Dung Defender", "Canales Reales", "Royal Waterways", stBool(getBool(pd, "killedDungDefender")), "1%"},
         {"[P2] Jefe: Receptáculo Roto", "[P2] Boss: Broken Vessel", "Cuenca Antigua", "Ancient Basin", stBool(getBool(pd, "killedInfectedKnight")), "1%"},
         {"[P2] Jefe: Nosk", "[P2] Boss: Nosk", "Nido Profundo", "Deepnest", stBool(getBool(pd, "killedMimicSpider")), "1%"},
-        {"[P3] Jefe: Centinela Hornet", "[P3] Boss: Centinela Hornet", "Límite del Reino", "Kingdom's Edge", stBool(getBool(pd, "hornetOutskirtsDefeated")), "1%"},
+        {"[P3] Jefe: Centinela Hornet", "[P3] Boss: Hornet Sentinela", "Límite del Reino", "Kingdom's Edge", stBool(getBool(pd, "hornetOutskirtsDefeated")), "1%"},
         {"[P4] Jefe: Caballeros Vigías", "[P4] Boss: Watcher Knights", "Torre del Vigia", "Watcher's Spire", stBool(getBool(pd, "killedBlackKnight")), "1%"},
         {"[P3] Jefe: Uumuu", "[P3] Boss: Uumuu", "Archivos de la Maestra", "Teacher's Archives", stBool(getBool(pd, "killedMegaJellyfish")), "1%"},
         {"[P3] Jefe: El Coleccionista", "[P3] Boss: The Collector", "Torre del Amor", "Tower of Love", stBool(getBool(pd, "killedJarCollector")), "1%"},
         {"[P4] Jefe: Señor Desleal", "[P4] Boss: Traitor Lord", "Jardines de la Reina", "Queen's Gardens", stBool(getBool(pd, "killedTraitorLord")), "1%"},
-        {"[P3] DLC: Maestro Compañía Grimm", "[P3] DLC: Troupe Master Grimm", "Bocasucia", "Dirtmouth", stBool(getBool(pd, "killedGrimm")), "1%"},
-        {"DLC: Rey Pesadilla / Destierro", "DLC: Nightmare King / Banish", "Bocasucia / Acantilados", "Dirtmouth / Cliffs", stBool(getBool(pd, "killedNightmareGrimm") || getBool(pd, "destroyedNightmareLantern")), "1%"},
-        {"[P3] DLC: Caballero Colmena", "[P3] DLC: Hive Knight", "La Colmena", "The Hive", stBool(getBool(pd, "killedHiveKnight")), "1%"},
-        makeHeader("--- GUERREROS ONÍRICOS (7%) ---", "--- WARRIOR DREAMS (7%) ---"),
-        {"[P2] Onirico: Xero", "[P2] Warrior Dream: Xero", "Tierras de Reposo", "Resting Grounds", stBool(getBool(pd, "killedGhostXero")), "1%"},
-        {"[P1] Onirico: Gorb", "[P1] Warrior Dream: Gorb", "Acantilados Aulladores", "Howling Cliffs", stBool(getBool(pd, "killedGhostAladar")), "1%"},
-        {"[P3] Onirico: Anciano Hu", "[P3] Warrior Dream: Elder Hu", "Páramos Fúngicos", "Fungal Wastes", stBool(getBool(pd, "killedGhostHu")), "1%"},
-        {"[P2] Onirico: Marmu", "[P2] Warrior Dream: Marmu", "Jardines de la Reina", "Queen's Gardens", stBool(getBool(pd, "killedGhostMarmu")), "1%"},
-        {"[P4] Onirico: Sin Ojos", "[P4] Warrior Dream: No Eyes", "Santuario de Piedra", "Stone Sanctuary", stBool(getBool(pd, "killedGhostNoEyes")), "1%"},
-        {"[P3] Onirico: Galien", "[P3] Warrior Dream: Galien", "Nido Profundo", "Deepnest", stBool(getBool(pd, "killedGhostGalien")), "1%"},
-        {"[P4] Onirico: Markoth", "[P4] Warrior Dream: Markoth", "Límite del Reino", "Kingdom's Edge", stBool(getBool(pd, "killedGhostMarkoth")), "1%"},
-        makeHeader("--- COLISEO DE LOS INSENSATOS (3%) ---", "--- COLOSSEUM OF FOOLS (3%) ---"),
-        {"Coliseo: Prueba Guerrero", "Colosseum: Trial of Warrior", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumBronzeCompleted")), "1%"},
-        {"Coliseo: Prueba Conquistador", "Colosseum: Trial of Conqueror", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumSilverCompleted")), "1%"},
-        {"Coliseo: Prueba Insensato", "Colosseum: Trial of Fool", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumGoldCompleted")), "1%"},
-        makeHeader("--- EQUIPO Y HABILIDADES (14%) ---", "--- EQUIPMENT & ABILITIES (14%) ---"),
+        makeHeader("--- AMULETOS (40%) ---", "--- CHARMS (40%) ---"),
+        makeHeader("--- EQUIPO (14%) ---", "--- EQUIPMENT (14%) ---"),
         {"Equipo: Capa Ala de Polilla", "Equip: Mothwing Cloak", "Sendero Verde", "Greenpath", stBool(getBool(pd, "hasDash")), "2%"},
         {"Equipo: Garra de Mantis", "Equip: Mantis Claw", "Aldea Mantis", "Mantis Village", stBool(getBool(pd, "hasWalljump")), "2%"},
         {"Equipo: Corazón de Cristal", "Equip: Crystal Heart", "Cumbre de Cristal", "Crystal Peak", stBool(getBool(pd, "hasSuperDash")), "2%"},
@@ -438,11 +424,12 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         {"Equipo: Lágrima de Isma", "Equip: Isma's Tear", "Arboleda de Isma", "Isma's Grove", stBool(getBool(pd, "hasAcidArmour")), "2%"},
         {"Equipo: Capa Sombría", "Equip: Shade Cloak", "El Abismo", "The Abyss", stBool(getBool(pd, "hasShadowDash")), "2%"},
         {"Equipo: Marca del Rey", "Equip: King's Brand", "Límite del Reino", "Kingdom's Edge", stBool(getBool(pd, "hasKingsBrand")), "2%"},
-        makeHeader("--- AGUIJÓN Y ARTES (7%) ---", "--- NAIL UPGRADES & ARTS (7%) ---"),
+        makeHeader("--- MEJORAS DE AGUIJÓN (4%) ---", "--- NAIL UPGRADES (4%) ---"),
         {"Aguijón Afilado (+1)", "Sharpened Nail (+1)", "Forjaguijones (250 Geo)", "Nailsmith (250 Geo)", stBool(nailUp >= 1), "1%"},
         {"Aguijón Estilizado (+2)", "Channelled Nail (+2)", "Forjaguijones (800 Geo + 1 Ore)", "Nailsmith (800 Geo + 1 Ore)", stBool(nailUp >= 2), "1%"},
         {"Aguijón Espiral (+3)", "Coiled Nail (+3)", "Forjaguijones (2000 Geo + 2 Ore)", "Nailsmith (2000 Geo + 2 Ore)", stBool(nailUp >= 3), "1%"},
         {"Aguijón Puro (+4)", "Pure Nail (+4)", "Forjaguijones (4000 Geo + 3 Ore)", "Nailsmith (4000 Geo + 3 Ore)", stBool(nailUp >= 4), "1%"},
+        makeHeader("--- ARTES DE AGUIJÓN (3%) ---", "--- NAIL ARTS (3%) ---"),
         {"Arte: Gran Corte", "Nail Art: Great Slash", "Maestro Sheo", "Nailmaster Sheo", stBool(getBool(pd, "hasUpwardSlash")), "1%"},
         {"Arte: Corte Ciclón", "Nail Art: Cyclone Slash", "Maestro Mato", "Nailmaster Mato", stBool(getBool(pd, "hasCyclone")), "1%"},
         {"Arte: Corte Veloz", "Nail Art: Dash Slash", "Maestro Oro (800 Geo)", "Nailmaster Oro (800 Geo)", stBool(getBool(pd, "hasDashSlash")), "1%"},
@@ -451,71 +438,42 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         {"Hechizo: Alma Sombría", "Spell: Shade Soul", "Santuario de Almas", "Soul Sanctum", stBool(getInt(pd, "fireballLevel") >= 2), "1%"},
         {"Hechizo: Salto Desolador", "Spell: Desolate Dive", "Santuario de Almas", "Soul Sanctum", stBool(getInt(pd, "quakeLevel") >= 1), "1%"},
         {"Hechizo: Oscuridad Descendente", "Spell: Descending Dark", "Túmulo Cristalizado", "Crystallized Mound", stBool(getInt(pd, "quakeLevel") >= 2), "1%"},
-        {"Hechizo: Espectros Aulladores", "Spell: Howling Wraiths", "Túmulo Descuidado", "Overgrown Mound", stBool(getInt(pd, "screamLevel") >= 1), "1%"},        {"Hechizo: Chillido del Abismo", "Spell: Abyss Shriek",
-         "El Abismo", "The Abyss",
-         stBool(getInt(pd, "screamLevel") >= 2), "1%"},
-        makeHeader("--- AGUIJÓN ONÍRICO Y SONADORES (7%) ---", "--- DREAM NAIL & DREAMERS (7%) ---"),
-        {"Aguijón Onírico", "Dream Nail",
-         "Tierras de Reposo", "Resting Grounds",
-         stBool(getBool(pd, "hasDreamNail")), "1%"},
-        {"Aguijón Onírico Despertado", "Awoken Dream Nail",
-         "La Vidente (1800 Esencia)", "The Seer (1800 Essence)",
-         stBool(getBool(pd, "dreamNailUpgraded")), "1%"},
-        {"Ascensión de la Vidente", "Seer Ascension",
-         "La Vidente (2400 Esencia)", "The Seer (2400 Essence)",
-         stBool(getBool(pd, "mothDeparted")), "1%"},
-        {"Afinador de Dioses", "Godtuner",
-         "Foso de Basura", "Junk Pit",
-         stBool(getBool(pd, "hasGodfinder")), "1%"},
-        {"Sonador: Lurien", "Dreamer: Lurien",
-         "Torre del Vigia", "Watcher's Spire",
-         stBool(getBool(pd, "lurienDefeated")), "1%"},
-        {"Sonador: Monomon", "Dreamer: Monomon",
-         "Archivos de la Maestra", "Teacher's Archives",
-         stBool(getBool(pd, "monomonDefeated")), "1%"},
-        {"Sonador: Herrah", "Dreamer: Herrah",
-         "Guarida de la Bestia", "Beast's Den",
-         stBool(getBool(pd, "herrahDefeated")), "1%"}
+        {"Hechizo: Espectros Aulladores", "Spell: Howling Wraiths", "Túmulo Descuidado", "Overgrown Mound", stBool(getInt(pd, "screamLevel") >= 1), "1%"},
+        {"Hechizo: Chillido del Abismo", "Spell: Abyss Shriek", "El Abismo", "The Abyss", stBool(getInt(pd, "screamLevel") >= 2), "1%"},
+        makeHeader("--- FRAGMENTOS DE MÁSCARA (4%) ---", "--- MASK SHARDS (4%) ---"),
+        makeHeader("--- FRAGMENTOS DE VASIJA (3%) ---", "--- VESSEL FRAGMENTS (3%) ---"),
+        makeHeader("--- AGUIJÓN ONÍRICO Y ESENCIA (3%) ---", "--- DREAM NAIL & ESSENCE (3%) ---"),
+        {"Aguijón Onírico", "Dream Nail", "Tierras de Reposo", "Resting Grounds", stBool(getBool(pd, "hasDreamNail")), "1%"},
+        {"Aguijón Onírico Despertado", "Awoken Dream Nail", "La Vidente (1800 Esencia)", "The Seer (1800 Essence)", stBool(getBool(pd, "dreamNailUpgraded")), "1%"},
+        {"Ascensión de la Vidente", "Seer Ascension", "La Vidente (2400 Esencia)", "The Seer (2400 Essence)", stBool(getBool(pd, "mothDeparted")), "1%"},
+        makeHeader("--- GUERREROS ONÍRICOS (7%) ---", "--- WARRIOR DREAMS (7%) ---"),
+        {"[P2] Onirico: Xero", "[P2] Warrior Dream: Xero", "Tierras de Reposo", "Resting Grounds", stBool(getBool(pd, "killedGhostXero")), "1%"},
+        {"[P1] Onirico: Gorb", "[P1] Warrior Dream: Gorb", "Acantilados Aulladores", "Howling Cliffs", stBool(getBool(pd, "killedGhostAladar")), "1%"},
+        {"[P3] Onirico: Anciano Hu", "[P3] Warrior Dream: Elder Hu", "Páramos Fúngicos", "Fungal Wastes", stBool(getBool(pd, "killedGhostHu")), "1%"},
+        {"[P2] Onirico: Marmu", "[P2] Warrior Dream: Marmu", "Jardines de la Reina", "Queen's Gardens", stBool(getBool(pd, "killedGhostMarmu")), "1%"},
+        {"[P4] Onirico: Sin Ojos", "[P4] Warrior Dream: No Eyes", "Santuario de Piedra", "Stone Sanctuary", stBool(getBool(pd, "killedGhostNoEyes")), "1%"},
+        {"[P3] Onirico: Galien", "[P3] Warrior Dream: Galien", "Nido Profundo", "Deepnest", stBool(getBool(pd, "killedGhostGalien")), "1%"},
+        {"[P4] Onirico: Markoth", "[P4] Warrior Dream: Markoth", "Límite del Reino", "Kingdom's Edge", stBool(getBool(pd, "killedGhostMarkoth")), "1%"},
+        makeHeader("--- SONADORES (3%) ---", "--- DREAMERS (3%) ---"),
+        {"Sonador: Lurien", "Dreamer: Lurien", "Torre del Vigia", "Watcher's Spire", stBool(getBool(pd, "lurienDefeated")), "1%"},
+        {"Sonador: Monomon", "Dreamer: Monomon", "Archivos de la Maestra", "Teacher's Archives", stBool(getBool(pd, "monomonDefeated")), "1%"},
+        {"Sonador: Herrah", "Dreamer: Herrah", "Guarida de la Bestia", "Beast's Den", stBool(getBool(pd, "herrahDefeated")), "1%"},
+        makeHeader("--- COLISEO DE LOS INSENSATOS (3%) ---", "--- COLOSSEUM OF FOOLS (3%) ---"),
+        {"Coliseo: Prueba Guerrero", "Colosseum: Trial of Warrior", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumBronzeCompleted")), "1%"},
+        {"Coliseo: Prueba Conquistador", "Colosseum: Trial of Conqueror", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumSilverCompleted")), "1%"},
+        {"Coliseo: Prueba Insensato", "Colosseum: Trial of Fool", "Coliseo de los Insensatos", "Colosseum of Fools", stBool(getBool(pd, "colosseumGoldCompleted")), "1%"},
+        makeHeader("--- COMPAÑÍA GRIMM (2%) ---", "--- GRIMM TROUPE CONTENT PACK (2%) ---"),
+        {"[P3] Maestro Compañía Grimm", "[P3] Troupe Master Grimm", "Bocasucia", "Dirtmouth", stBool(getBool(pd, "killedGrimm")), "1%"},
+        {"Rey Pesadilla Grimm", "Nightmare King Grimm", "Bocasucia", "Dirtmouth", stBool(getBool(pd, "killedNightmareGrimm")), "1%"},
+        makeHeader("--- PAQUETE DE CONTENIDO VIDA (1%) ---", "--- LIFEBLOOD CONTENT PACK (1%) ---"),
+        {"Caballero Colmena", "Hive Knight", "La Colmena", "The Hive", stBool(getBool(pd, "killedHiveKnight")), "1%"},
+        makeHeader("--- PAQUETE DE CONTENIDO GOOMASTER (0%) ---", "--- GOOMASTER CONTENT PACK (0%) ---"),
+        {"Goomaster (Cosmético)", "Goomaster (Cosmetic)", "Forjaguijones", "Nailsmith", stBool(false), "0%"}
     };
 
-        res.essentials112.push_back(makeHeader("--- FRAGMENTOS DE MÁSCARA (16 = 4%) ---", "--- MASK SHARDS (16 = 4%) ---"));
-    // Contar cuantos fragmentos de mundo estan activados en sceneData para deducir los de Sly/Vidente
-    int worldShardsDone = 0;
-    for (const auto& ms : WEB_MASK_SHARDS) {
-        if (!ms.scene.empty() && boolItems.count(ms.scene + "|" + ms.id) > 0) worldShardsDone++;
-    }
-    int vendorShardsDone = std::max(0, maskShards - worldShardsDone);
-    int vShardIdx = 0;
-    for (const auto& ms : WEB_MASK_SHARDS) {
-        bool done = false;
-        if (!ms.scene.empty()) {
-            done = (boolItems.count(ms.scene + "|" + ms.id) > 0);
-        } else {
-            vShardIdx++;
-            done = (vendorShardsDone >= vShardIdx);
-        }
-        res.essentials112.push_back({ms.nameES, ms.name, getLoc(ms.spoilerES, ms.spoiler), ms.spoiler, stBool(done), "0.25%"});
-    }
-
-    res.essentials112.push_back(makeHeader("--- FRAGMENTOS DE VASIJA (9 = 3%) ---", "--- VESSEL FRAGMENTS (9 = 3%) ---"));
-    int worldVesselsDone = 0;
-    for (const auto& vf : WEB_VESSEL_FRAGS) {
-        if (!vf.scene.empty() && boolItems.count(vf.scene + "|" + vf.id) > 0) worldVesselsDone++;
-    }
-    int vendorVesselsDone = std::max(0, vesselFrags - worldVesselsDone);
-    int vVesIdx = 0;
-    for (const auto& vf : WEB_VESSEL_FRAGS) {
-        bool done = false;
-        if (!vf.scene.empty()) {
-            done = (boolItems.count(vf.scene + "|" + vf.id) > 0);
-        } else {
-            vVesIdx++;
-            done = (vendorVesselsDone >= vVesIdx);
-        }
-        res.essentials112.push_back({vf.nameES, vf.name, getLoc(vf.spoilerES, vf.spoiler), vf.spoiler, stBool(done), "0.33%"});
-    }
-
-    res.essentials112.push_back(makeHeader("--- AMULETOS (40 = 40%) ---", "--- CHARMS (40 = 40%) ---"));
+    // Insert charms after the CHARMS header (index 15 in the initializer list)
+    // Index 0: JEFES header, 1-14: 14 bosses, 15: AMULETOS header
+    int charmsHeaderIdx = 15;
     for (size_t i = 0; i < WEB_CHARMS.size(); ++i) {
         const auto& ch = WEB_CHARMS[i];
         int cNum = (int)i + 1;
@@ -523,39 +481,69 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         ItemState st = stBool(hasC);
         if (!hasC && cNum == 38 && getBool(pd, "killedNightmareGrimm")) st = ItemState::Unavailable;
         if (!hasC && cNum == 40 && getBool(pd, "destroyedNightmareLantern")) st = ItemState::Unavailable;
-        res.essentials112.push_back({ch.nameES, ch.name, getLoc(ch.spoilerES, ch.spoiler), ch.spoiler, st, "1%"});
+        res.essentials112.insert(res.essentials112.begin() + charmsHeaderIdx + 1 + i, {ch.nameES, ch.name, getLoc(ch.spoilerES, ch.spoiler), ch.spoiler, st, "1%"});
     }
 
-        // 2. Essentials % (4 subsecciones reales de la web)
-        // Nota: reutilizamos essentials112 para MAIN (112%) y creamos las listas exactas de Essentials % y Achievements
-    std::vector<CheckItem> essTabItems;
-    auto pushEssTab = [&](const std::string& hES, const std::string& hEN,
-                          const std::vector<RawEssEntry>& vec) {
-        essTabItems.push_back(makeHeader(hES, hEN));
-        for (const auto& item : vec) {
-            bool done = evalRawEss(item, pd, boolItems);
-            essTabItems.push_back({item.nameES, item.name, getLoc(item.spoilerES, item.spoiler), item.spoiler, stBool(done), "Ess."});
+    // Insert mask shards after the MASK SHARDS header (index 40 in the initializer list, adjusted for charms inserted)
+    // Original index 40 + 40 charms inserted = 80
+    int maskShardsHeaderIdx = 40 + (int)WEB_CHARMS.size();
+    // Contar cuantos fragmentos de mundo estan activados en sceneData para deducir los de Sly/Vidente
+    int worldShardsDone = 0;
+    for (const auto& ms : WEB_MASK_SHARDS) {
+        if (!ms.scene.empty() && boolItems.count(ms.scene + "|" + ms.id) > 0) worldShardsDone++;
+    }
+    int vendorShardsDone = std::max(0, maskShards - worldShardsDone);
+    int vShardIdx = 0;
+    for (size_t mi = 0; mi < WEB_MASK_SHARDS.size(); ++mi) {
+        const auto& ms = WEB_MASK_SHARDS[mi];
+        bool done = false;
+        if (!ms.scene.empty()) {
+            done = (boolItems.count(ms.scene + "|" + ms.id) > 0);
+        } else {
+            vShardIdx++;
+            done = (vendorShardsDone >= vShardIdx);
         }
-    };
-    pushEssTab("--- ESENCIALES %: COLECCIONABLES ---", "--- GAME COMPLETION % ESSENTIALS - COLLECTIBLES ---", WEB_ESS_COLL);
-    pushEssTab("--- ESENCIALES %: ESTACIONES DE CIERVO ---", "--- GAME COMPLETION % ESSENTIALS - STAG STATIONS ---", WEB_ESS_STAGS);
-    pushEssTab("--- ESENCIALES %: INTERACCIONES DEL MUNDO ---", "--- GAME COMPLETION % ESSENTIALS - WORLD INTERACTIONS ---", WEB_ESS_WORLD);
-    pushEssTab("--- ESENCIALES %: JEFES ---", "--- GAME COMPLETION % ESSENTIALS - BOSSES ---", WEB_ESS_BOSSES);
+        res.essentials112.insert(res.essentials112.begin() + maskShardsHeaderIdx + 1 + mi, {ms.nameES, ms.name, getLoc(ms.spoilerES, ms.spoiler), ms.spoiler, stBool(done), "0.25%"});
+    }
 
-    res.essentialsExtra = std::move(essTabItems);
-    res.achievementsHints.clear();
-    auto pushAchTab = [&](const std::string& hES, const std::string& hEN,
-                          const std::vector<RawEssEntry>& vec) {
-        res.achievementsHints.push_back(makeHeader(hES, hEN));
+    // Insert vessel fragments after the VESSEL FRAGMENTS header (index 41 in the initializer list, adjusted for charms + mask shards inserted)
+    // Original index 41 + 40 charms + 16 mask shards = 97
+    int vesselFragsHeaderIdx = 41 + (int)WEB_CHARMS.size() + (int)WEB_MASK_SHARDS.size();
+    int worldVesselsDone = 0;
+    for (const auto& vf : WEB_VESSEL_FRAGS) {
+        if (!vf.scene.empty() && boolItems.count(vf.scene + "|" + vf.id) > 0) worldVesselsDone++;
+    }
+    int vendorVesselsDone = std::max(0, vesselFrags - worldVesselsDone);
+    int vVesIdx = 0;
+    for (size_t vi = 0; vi < WEB_VESSEL_FRAGS.size(); ++vi) {
+        const auto& vf = WEB_VESSEL_FRAGS[vi];
+        bool done = false;
+        if (!vf.scene.empty()) {
+            done = (boolItems.count(vf.scene + "|" + vf.id) > 0);
+        } else {
+            vVesIdx++;
+            done = (vendorVesselsDone >= vVesIdx);
+        }
+        res.essentials112.insert(res.essentials112.begin() + vesselFragsHeaderIdx + 1 + vi, {vf.nameES, vf.name, getLoc(vf.spoilerES, vf.spoiler), vf.spoiler, stBool(done), "0.33%"});
+    }
+
+    // 2. Essentials + Achievements combinados (8 subsecciones en un solo vector)
+    auto pushCombinedTab = [&](const std::string& hES, const std::string& hEN,
+                               const std::vector<RawEssEntry>& vec, const std::string& badge) {
+        res.essentialsAchievements.push_back(makeHeader(hES, hEN));
         for (const auto& item : vec) {
             bool done = evalRawEss(item, pd, boolItems);
-            res.achievementsHints.push_back({item.nameES, item.name, getLoc(item.spoilerES, item.spoiler), item.spoiler, stBool(done), "Ach."});
+            res.essentialsAchievements.push_back({item.nameES, item.name, getLoc(item.spoilerES, item.spoiler), item.spoiler, stBool(done), badge});
         }
     };
-    pushAchTab("--- LOGROS: COLECCIONABLES ---", "--- ACHIEVEMENTS ESSENTIALS - COLLECTIBLES ---", WEB_ACH_COLL);
-    pushAchTab("--- LOGROS: MAPAS ---", "--- ACHIEVEMENTS ESSENTIALS - MAPS ---", WEB_ACH_MAPS);
-    pushAchTab("--- LOGROS: INTERACCIONES DEL MUNDO ---", "--- ACHIEVEMENTS ESSENTIALS - WORLD INTERACTIONS ---", WEB_ACH_WORLD);
-    pushAchTab("--- LOGROS: JEFES ---", "--- ACHIEVEMENTS ESSENTIALS - BOSSES ---", WEB_ACH_BOSSES);
+    pushCombinedTab("--- ESENCIALES %: COLECCIONABLES ---", "--- GAME COMPLETION % ESSENTIALS - COLLECTIBLES ---", WEB_ESS_COLL, "Ess.");
+    pushCombinedTab("--- ESENCIALES %: ESTACIONES DE CIERVO ---", "--- GAME COMPLETION % ESSENTIALS - STAG STATIONS ---", WEB_ESS_STAGS, "Ess.");
+    pushCombinedTab("--- ESENCIALES %: INTERACCIONES DEL MUNDO ---", "--- GAME COMPLETION % ESSENTIALS - WORLD INTERACTIONS ---", WEB_ESS_WORLD, "Ess.");
+    pushCombinedTab("--- ESENCIALES %: JEFES ---", "--- GAME COMPLETION % ESSENTIALS - BOSSES ---", WEB_ESS_BOSSES, "Ess.");
+    pushCombinedTab("--- LOGROS: COLECCIONABLES ---", "--- ACHIEVEMENTS ESSENTIALS - COLLECTIBLES ---", WEB_ACH_COLL, "Ach.");
+    pushCombinedTab("--- LOGROS: MAPAS ---", "--- ACHIEVEMENTS ESSENTIALS - MAPS ---", WEB_ACH_MAPS, "Ach.");
+    pushCombinedTab("--- LOGROS: INTERACCIONES DEL MUNDO ---", "--- ACHIEVEMENTS ESSENTIALS - WORLD INTERACTIONS ---", WEB_ACH_WORLD, "Ach.");
+    pushCombinedTab("--- LOGROS: JEFES ---", "--- ACHIEVEMENTS ESSENTIALS - BOSSES ---", WEB_ACH_BOSSES, "Ach.");
 
     // 3. Diario del Cazador real desde WEB_JOURNAL_BASE y WEB_JOURNAL_OPT
     bool zoteNeglect = getBool(pd, "zoteDead") ||
@@ -597,8 +585,17 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         });
     }
 
-    // 4. Coleccionables reales (46 Larvas + 15 Raices + Reliquias individuales)
+    // 4. Coleccionables reales (Hendiduras para amuletos + 46 Larvas + 15 Raices + Reliquias + Huevos podridos + Objetos)
     bool grub32Done = false;
+    res.collectibles.push_back(makeHeader("--- HENDIDURAS PARA AMULETOS (8) ---", "--- CHARM NOTCHES (8) ---"));
+    res.collectibles.push_back({"Muesca de amuleto #1", "Charm Notch #1", "Páramos Fúngicos: Sala de Fungiogros", "Fungal Wastes: Shroom Ogres room", stBool(getBool(pd, "notchShroomOgres")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #2", "Charm Notch #2", "Salubra: 120 Geo + 5 Amuletos", "Salubra: 120 Geo + 5 Charms", stBool(getBool(pd, "salubraNotch1")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #3", "Charm Notch #3", "Salubra: 500 Geo + 10 Amuletos", "Salubra: 500 Geo + 10 Charms", stBool(getBool(pd, "salubraNotch2")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #4", "Charm Notch #4", "Salubra: 900 Geo + 18 Amuletos", "Salubra: 900 Geo + 18 Charms", stBool(getBool(pd, "salubraNotch3")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #5", "Charm Notch #5", "Salubra: 1400 Geo + 25 Amuletos", "Salubra: 1400 Geo + 25 Charms", stBool(getBool(pd, "salubraNotch4")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #6", "Charm Notch #6", "Coliseo: Prueba del Guerrero", "Colosseum: Trial of Warrior", stBool(getBool(pd, "colosseumBronzeCompleted")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #7", "Charm Notch #7", "Cañón de Niebla: Sala de huevos explosivos", "Fog Canyon: Explosive eggs room", stBool(getBool(pd, "notchFogCanyon")), "Notch"});
+    res.collectibles.push_back({"Muesca de amuleto #8", "Charm Notch #8", "Bocasucia: Líder Grimm", "Dirtmouth: Troupe Leader Grimm", stBool(getBool(pd, "gotGrimmNotch")), "Notch"});
     res.collectibles.push_back(makeHeader("--- LARVAS RESCATADAS (46) ---", "--- GRUBS (46) ---"));
     for (const auto& g : WEB_GRUBS) {
         bool done = boolItems.count(g.scene + "|" + g.id) > 0;
@@ -639,6 +636,31 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         bool done = (!re.scene.empty() && boolItems.count(re.scene + "|" + re.id) > 0);
         res.collectibles.push_back({re.nameES, re.name, getLoc(re.spoilerES, re.spoiler), re.spoiler, stBool(done), "Egg"});
     }
+    res.collectibles.push_back(makeHeader("--- OBJETOS ---", "--- ITEMS ---"));
+    res.collectibles.push_back({"Pluma", "Quill", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasQuill")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Banco", "Map Pin: Bench", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinBench")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Vendedor", "Map Pin: Vendor", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinShop")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Capullo de Saviavida", "Map Pin: Lifeblood Cocoon", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinCocoon")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Aguas termales", "Map Pin: Hot Springs", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinSpa")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Estación de Ciervo", "Map Pin: Stag Station", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinStag")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Tumba del Guerrero", "Map Pin: Warrior's Grave", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinGhost")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Raíz Susurrante", "Map Pin: Whispering Root", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinDreamPlant")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Tranvía", "Map Pin: Tram", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasPinTram")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Marcador de Concha", "Map Pin: Shell Marker", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasMarker_r")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Marcador de Escarabajo", "Map Pin: Scarab Marker", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasMarker_b")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Marcador de Moneda", "Map Pin: Token Marker", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasMarker_y")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Marcador Resplandeciente", "Map Pin: Gleaming Marker", "Cruces Olvidados: Tienda de Iselda", "Forgotten Crossroads: Iselda's Shop", stBool(getBool(pd, "hasMarker_w")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Sonadores", "Map Pin: Dreamers", "Descanso: Inspeccionar el santuario", "Resting Grounds: Inspect the shrine", stBool(getBool(pd, "hasPinGuardian")), "Item"});
+    res.collectibles.push_back({"Pin de mapa: Templo del Huevo Negro", "Map Pin: Temple of the Black Egg", "Ciudad de Lágrimas: Inspeccionar fuente", "City of Tears: Inspect fountain", stBool(getBool(pd, "hasPinBlackEgg")), "Item"});
+    res.collectibles.push_back({"Mapa del coleccionista", "Collector's Map", "Borde del Reino: Torre del Amor", "Kingdom's Edge: Tower of Love", stBool(getBool(pd, "hasPinGrub")), "Item"});
+    res.collectibles.push_back({"Blasón de la Ciudad", "City Crest", "Cruces Olvidados: Recompensa Falso Caballero", "Forgotten Crossroads: False Knight Reward", stBool(getBool(pd, "cityCrest")), "Item"});
+    res.collectibles.push_back({"Portal Onírico", "Dreamgate", "Vidente: 900 Esencia", "Seer: 900 Essence", stBool(getBool(pd, "hasDreamGate")), "Item"});
+    res.collectibles.push_back({"Codicia irrompible", "Unbreakable Greed", "Divino: Codicia frágil + 9000 Geo", "Divine: Fragile Greed + 9000 Geo", stBool(getBool(pd, "fragileGreed_unbreakable")), "Item"});
+    res.collectibles.push_back({"Corazón irrompible", "Unbreakable Heart", "Divino: Corazón frágil + 12000 Geo", "Divine: Fragile Heart + 12000 Geo", stBool(getBool(pd, "fragileHealth_unbreakable")), "Item"});
+    res.collectibles.push_back({"Fuerza irrompible", "Unbreakable Strength", "Divino: Fuerza frágil + 15000 Geo", "Divine: Fragile Strength + 15000 Geo", stBool(getBool(pd, "fragileStrength_unbreakable")), "Item"});
+    res.collectibles.push_back({"Linterna de lumélula", "Lumafly Lantern", "Cruces Olvidados", "Forgotten Crossroads", stBool(getBool(pd, "hasLantern")), "Item"});
+    res.collectibles.push_back({"Linterna de Pesadilla", "Nightmare Lantern", "Acantilados Aulladores", "Howling Cliffs", stBool(getBool(pd, "nightmareLanternLit")), "Item"});
+    res.collectibles.push_back({"Afinador de Dioses", "Godtuner", "Pila de Basura", "Junk Pit", stBool(getBool(pd, "hasGodfinder")), "Item"});
 
 
     // 5. Alijos de Geo reales (Cofres + 205 Rocas individuales)
@@ -657,35 +679,97 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         });
     }
 
-    // 6. Secretos
+    // 6. Secretos (3 subsecciones: Interacciones del mundo, Salas secretas, Notas de Cornifer)
     int mrM = getInt(pd, "mrMushroomState", 0);
-    res.secrets = {
-        {"Señor Seta", "Mr. Mushroom", "7 ubicaciones con Hongo Esporas",
-         "7 locations with Spore Shroom", stBool(mrM >= 8),
-         std::to_string(std::min(mrM, 7)) + "/7"},
-        {"Sendero del Dolor", "Path of Pain", "Palacio Blanco", "White Palace",
-         stBool(getBool(pd, "visitedPathOfPain")), "Secret"},
-        {"Fabricante de máscaras desmascarado", "Mask Maker Unmasked",
-         "Nido Profundo", "Deepnest",
-         stBool(getBool(pd, "maskMakerUnmasked")), "Secret"},
-        {"Sentido del Mundo", "World Sense", "Templo Huevo Negro",
-         "Temple of the Black Egg",
-         stBool(getBool(pd, "unlockedCompletionRate")), "100%"}
-    };
+    res.secrets.clear();
+    res.secrets.push_back(makeHeader("--- INTERACCIONES DEL MUNDO ---", "--- WORLD INTERACTIONS ---"));
+    res.secrets.push_back({"Sentido del Mundo", "World Sense", "Templo del Huevo Negro", "Temple of the Black Egg", stBool(getBool(pd, "unlockedCompletionRate")), "Int."});
+    res.secrets.push_back({"Insectos charlando", "Gossipping Bugs", "Cruces Olvidados: Aguas termales", "Forgotten Crossroads: Hot Springs", stBool(getBool(pd, "spaBugsEncountered")), "Int."});
+    res.secrets.push_back({"Cueva de Jiji", "Confessor Jiji's Cave", "Bocasucia: Llave simple", "Dirtmouth: Simple Key", stBool(getBool(pd, "jijiDoorUnlocked")), "Int."});
+    res.secrets.push_back({"Casa del Placer", "Pleasure House", "Ciudad de Lágrimas: Lado derecho", "City of Tears: Right side", stBool(getBool(pd, "bathHouseOpened")), "Int."});
+    res.secrets.push_back({"Sumidero de Canales", "Waterways Manhole", "Ciudad de Lágrimas: Debajo de Lemm", "City of Tears: Below Lemm", stBool(getBool(pd, "openedWaterwaysManhole")), "Int."});
+    res.secrets.push_back({"Claro de los Espíritus", "Spirits' Glade", "Tierras de Reposo: 200 Esencia", "Resting Grounds: 200 Essence", stBool(getBool(pd, "gladeDoorOpened")), "Int."});
+    res.secrets.push_back({"Puerta de la Ciudad abierta", "City of Tears Gate", "Páramos Fúngicos: Blasón de la Ciudad", "Fungal Wastes: City Crest", stBool(getBool(pd, "openedCityGate")), "Int."});
+    res.secrets.push_back({"Atajo al Santuario de Almas", "Soul Sanctum Shortcut", "Ciudad de Lágrimas: Sala del ascensor", "City of Tears: Cornifer Lift Room", stBool(getBool(pd, "soulSanctumShortcut")), "Int."});
+    res.secrets.push_back({"Puerta de Canales abierta", "Waterways Gate", "Canales Reales: Sala de Cornifer", "Royal Waterways: Cornifer Room", stBool(getBool(pd, "waterwaysGate")), "Int."});
+    res.secrets.push_back({"Candelabro caído", "Chandelier Dropped", "Ciudad de Lágrimas: Sala Caballeros Vigía", "City of Tears: Watcher Knights Room", stBool(getBool(pd, "watcherChandelier")), "Int."});
+    res.secrets.push_back({"Aguas termales ocultas", "Hidden Hot Spring", "Coliseo: Romper pared del banco", "Colosseum: Break wall right of Bench", stBool(getBool(pd, "colosseumHiddenHotSpring")), "Int."});
+    res.secrets.push_back({"Huevo del Nido de ciervo", "Stag Nest Egg", "Acantilados Aulladores: Nido de ciervo", "Howling Cliffs: Top of Stag Nest", stBool(getBool(pd, "stagEggInspected")), "Int."});
+    res.secrets.push_back({"Puente del Nido Profundo", "Deepnest Entry Bridge", "Páramos Fúngicos: Izq. de Hongo Esporas", "Fungal Wastes: Left of Spore Shroom", stBool(getBool(pd, "deepnestBridgeCollapsed")), "Int."});
+    res.secrets.push_back({"Hacedor de Máscaras", "Mask Maker Unmasked", "Nido Profundo: Salto Desolador", "Deepnest: Use Desolate Dive", stBool(getBool(pd, "maskmakerUnmasked1")), "Int."});
+    res.secrets.push_back({"Cuenta bancaria abierta", "Bank Account Opened", "Cañón de Niebla: Millibelle", "Fog Canyon: Millibelle", stBool(getBool(pd, "bankerAccountPurchased")), "Int."});
+    res.secrets.push_back({"Banquera desaparecida", "Banker Disappeared", "Cañón de Niebla: Millibelle", "Fog Canyon: Millibelle", stBool(getBool(pd, "millibelleLeft")), "Int."});
+    res.secrets.push_back({"Puesto de la banquera", "Banker Stand Investigated", "Cañón de Niebla: Millibelle", "Fog Canyon: Millibelle", stBool(getBool(pd, "millibelleCheckedStand")), "Int."});
+    res.secrets.push_back({"Millibelle encontrada", "Found & Talked to Millibelle", "Ciudad de Lágrimas: Aguas termales", "City of Tears: Hot Springs", stBool(getBool(pd, "bankerSpaMet")), "Int."});
+    res.secrets.push_back({"Geo recuperado", "Reclaimed All Geo", "Ciudad de Lágrimas: Millibelle la ladrona", "City of Tears: Millibelle the Thief", stBool(getBool(pd, "millibelleReclaimedAllGeo")), "Int."});
+    res.secrets.push_back({"Flor Delicada: Bicho anciano", "Delicate Flower: Elderbug", "Entregar desde Tumba del Hijo traidor", "Deliver from Traitor's Child Grave", stBool(getBool(pd, "elderbugGaveFlower")), "Int."});
+    res.secrets.push_back({"Flor Delicada: Buscadora de Dioses", "Delicate Flower: Godseeker", "Después de 2 Panteones", "After completing 2 Pantheons", stBool(getBool(pd, "givenGodseekerFlower")), "Int."});
+    res.secrets.push_back({"Flor Delicada: Maestro Oro", "Delicate Flower: Nailmaster Oro", "Entregar desde Tumba del Hijo traidor", "Deliver from Traitor's Child Grave", stBool(getBool(pd, "givenOroFlower")), "Int."});
+    res.secrets.push_back({"Flor Delicada: Dama Blanca", "Delicate Flower: White Lady", "Entregar desde Tumba del Hijo traidor", "Deliver from Traitor's Child Grave", stBool(getBool(pd, "givenWhiteLadyFlower")), "Int."});
+    res.secrets.push_back({"Flor Delicada: Emilitia", "Delicate Flower: Emilitia", "Entregar desde Tumba del Hijo traidor", "Deliver from Traitor's Child Grave", stBool(getBool(pd, "givenEmilitiaFlower")), "Int."});
+    res.secrets.push_back({"Señor Seta", "Mr. Mushroom", "7 ubicaciones con Hongo Esporas", "7 locations with Spore Shroom", stBool(mrM >= 8), std::to_string(std::min(mrM, 7)) + "/7"});
+    res.secrets.push_back(makeHeader("--- SALAS SECRETAS ---", "--- SECRET ROOMS ---"));
+    res.secrets.push_back({"Tienda de Grimm: Sala secreta", "Grimm's Tent: Secret Room", "Bocasucia: Tienda de Grimm", "Dirtmouth: Grimm's Tent", stBool(getBool(pd, "grimmTentSecretRoom")), "Secret"});
+    res.secrets.push_back({"Torre del Amor: Sala secreta", "Tower of Love: Secret Room", "Ciudad de Lágrimas: Cerca del Mapa", "City of Tears: Near Collector's Map", stBool(getBool(pd, "towerOfLoveSecretRoom")), "Secret"});
+    res.secrets.push_back({"Guarida de Tejedoras: Sala secreta #1", "Weaver's Den: Secret Room #1", "Nido Profundo: Guarida de Tejedoras", "Deepnest: Weaver's Den", stBool(getBool(pd, "weaversDenSecretRoom1")), "Secret"});
+    res.secrets.push_back({"Guarida de Tejedoras: Sala secreta #2", "Weaver's Den: Secret Room #2", "Nido Profundo: Guarida de Tejedoras", "Deepnest: Weaver's Den", stBool(getBool(pd, "weaversDenSecretRoom2")), "Secret"});
+    res.secrets.push_back({"Palacio Blanco: Entrada Sendero del Dolor", "White Palace: Path of Pain Entrance", "Palacio Blanco: Romper pared", "White Palace: Break left wall", stBool(getBool(pd, "pathOfPainEntrance")), "Secret"});
+    res.secrets.push_back({"Sendero del Dolor", "Path of Pain", "Palacio Blanco: Área secreta", "White Palace: Main Secret Area", stBool(getBool(pd, "killsBindingSeal")), "Secret"});
+    res.secrets.push_back({"Palacio Blanco: Sala secreta #1", "White Palace: Secret Room #1", "Palacio Blanco: Taller del Rey Pálido", "White Palace: Pale King's Workshop", stBool(getBool(pd, "whitePalaceSecretRoomVisited")), "Secret"});
+    res.secrets.push_back({"Palacio Blanco: Sala secreta #2", "White Palace: Secret Room #2", "Palacio Blanco: Sala de la Dama Blanca", "White Palace: White Lady's Room", stBool(getBool(pd, "whiteLadyRoom")), "Secret"});
+    res.secrets.push_back({"Palacio Blanco: Sala secreta #3", "White Palace: Secret Room #3", "Palacio Blanco: Sala del Trono", "White Palace: Throne Room", stBool(getBool(pd, "throneRoomLoreTablet")), "Secret"});
+    res.secrets.push_back(makeHeader("--- NOTAS DE CORNIFER (10) ---", "--- CORNIFER'S NOTES (10) ---"));
+    res.secrets.push_back({"Nota #1: Cruces Olvidados", "Note #1: Forgotten Crossroads", "Debajo de la sala de Madre Gruz", "Below Big Gruzzer Room", stBool(getBool(pd, "corniferNote1")), "Note"});
+    res.secrets.push_back({"Nota #2: Sendero Verde", "Note #2: Greenpath", "Sala debajo de la entrada de Cruces", "Room below Crossroads entrance", stBool(getBool(pd, "corniferNote2")), "Note"});
+    res.secrets.push_back({"Nota #3: Páramos Fúngicos", "Note #3: Fungal Wastes", "Derecha de Estación de la Reina", "Right of Queen's Station", stBool(getBool(pd, "corniferNote3")), "Note"});
+    res.secrets.push_back({"Nota #4: Acantilados Aulladores", "Note #4: Howling Cliffs", "Gran área principal a la izquierda", "Big Main Area on the left", stBool(getBool(pd, "corniferNote4")), "Note"});
+    res.secrets.push_back({"Nota #5: Ciudad de Lágrimas", "Note #5: City of Tears", "Banco del peaje izq. del Santuario", "Toll Bench left of Soul Sanctum", stBool(getBool(pd, "corniferNote5")), "Note"});
+    res.secrets.push_back({"Nota #6: Cumbre de Cristal", "Note #6: Crystal Peak", "Izquierda del Banco central", "Left of Central Bench", stBool(getBool(pd, "corniferNote6")), "Note"});
+    res.secrets.push_back({"Nota #7: Tierras de Reposo", "Note #7: Resting Grounds", "Cerca de la Estación de ciervo", "Near the Stag Station", stBool(getBool(pd, "corniferNote7")), "Note"});
+    res.secrets.push_back({"Nota #8: Canales Reales", "Note #8: Royal Waterways", "Cerca de la salida a Páramos", "Near Fungal Wastes exit", stBool(getBool(pd, "corniferNote8")), "Note"});
+    res.secrets.push_back({"Nota #9: Cuenca Antigua", "Note #9: Ancient Basin", "Debajo del Tranvía y la fuente", "Below the Tram and Fountain", stBool(getBool(pd, "corniferNote9")), "Note"});
+    res.secrets.push_back({"Nota #10: Límite del Reino", "Note #10: Kingdom's Edge", "Debajo de la entrada de Estación del Rey", "Below the King's Station entrance", stBool(getBool(pd, "corniferNote10")), "Note"});
 
-        res.godhome.clear();
-    res.godhome.push_back(makeHeader("--- PANTEONES (P1 - P5) ---", "--- PANTHEONS (P1 - P5) ---"));
+    // 7. Godmaster (Estadísticas + P1-P5 con vínculos + Salón de los Dioses)
+    res.godhome.clear();
+    res.godhome.push_back(makeHeader("--- ESTADÍSTICAS DE GODHOME ---", "--- GODHOME STATISTICS ---"));
+    res.godhome.push_back({"Memoria del Afinador", "Tuner Memory", "3 Panteones completados, 2% probabilidad", "3 Pantheons completed, 2% chance", stBool(getBool(pd, "seenGGWastes")), "Stat"});
+    res.godhome.push_back({"Puerta de Vida abierta", "Lifeblood Door Open", "8 vínculos de Panteones totales", "8 total Pantheon bindings", stBool(getBool(pd, "blueRoomDoorUnlocked")), "Stat"});
+    res.godhome.push_back({"Diario: Ídolo del Vacío Sintonizado", "Journal: Void Idol Attuned", "Salón de los Dioses: Derrotar todos (Sintonizado)", "Hall of Gods: Defeat All (Attuned)", stBool(getBool(pd, "killedVoidIdol_1")), "Stat"});
+    res.godhome.push_back({"Diario: Ídolo del Vacío Ascendido", "Journal: Void Idol Ascended", "Salón de los Dioses: Derrotar todos (Ascendido)", "Hall of Gods: Defeat All (Ascended)", stBool(getBool(pd, "killedVoidIdol_2")), "Stat"});
+    res.godhome.push_back({"Diario: Ídolo del Vacío Radiante", "Journal: Void Idol Radiant", "Salón de los Dioses: Derrotar todos (Radiante)", "Hall of Gods: Defeat All (Radiant)", stBool(getBool(pd, "killedVoidIdol_3")), "Stat"});
+    res.godhome.push_back({"Diario: Máscara desgastada", "Journal: Weathered Mask", "Tierra de Tormentas: Panteones y vínculos", "Land of Storms: All Pantheons & Bindings", stBool(getBool(pd, "killedGodseekerMask")), "Stat"});
+    res.godhome.push_back({"Intruso descubierto", "Intruder Discovered", "Salón de los Dioses: Estatua de Zote", "Hall of Gods: Zote Statue", stBool(getBool(pd, "zoteStatueWallBroken")), "Stat"});
+    res.godhome.push_back({"El Calvario Eterno", "The Eternal Ordeal", "57 Zotelines derrotados", "57 Zotelings defeated", stBool(getBool(pd, "ordealAchieved")), "Stat"});
+    const std::vector<std::string> pNamesES = {"", "P1 - Panteón del Maestro", "P2 - Panteón del Artista", "P3 - Panteón del Sabio", "P4 - Panteón del Caballero", "P5 - Panteón de Hallownest"};
+    const std::vector<std::string> pNamesEN = {"", "P1 - Pantheon of the Master", "P2 - Pantheon of the Artist", "P3 - Pantheon of the Sage", "P4 - Pantheon of the Knight", "P5 - Pantheon of Hallownest"};
     for (int p = 1; p <= 5; ++p) {
+        res.godhome.push_back(makeHeader("--- " + pNamesES[p] + " ---", "--- " + pNamesEN[p] + " ---"));
         std::string key = "bossDoorStateTier" + std::to_string(p);
-        std::string pName = (p == 5) ? "Pantheon 5: Hallownest" : ("Pantheon " + std::to_string(p));
-        CheckItem ci{pName, pName, "Godhome", "Godhome",
-                     stBool(getObjBool(pd, key, "completed")), "P" + std::to_string(p),
-                     getObjBool(pd, key, "allBindings") ? 3 : 1};
-        ci.bindNail = getObjBool(pd, key, "boundNail");
-        ci.bindShell = getObjBool(pd, key, "boundShell");
-        ci.bindCharms = getObjBool(pd, key, "boundCharms");
-        ci.bindSoul = getObjBool(pd, key, "boundSoul");
-        res.godhome.push_back(ci);
+        bool unlocked = getObjBool(pd, key, "unlocked");
+        bool completed = getObjBool(pd, key, "completed");
+        bool boundNail = getObjBool(pd, key, "boundNail");
+        bool boundShell = getObjBool(pd, key, "boundShell");
+        bool boundCharms = getObjBool(pd, key, "boundCharms");
+        bool boundSoul = getObjBool(pd, key, "boundSoul");
+        bool allBindings = getObjBool(pd, key, "allBindings");
+        bool noHits = getObjBool(pd, key, "noHits");
+        res.godhome.push_back({pNamesES[p] + ": Desbloqueado", pNamesEN[p] + ": Unlocked", "Godhome", "Godhome", stBool(unlocked), "P" + std::to_string(p)});
+        res.godhome.push_back({pNamesES[p] + ": Completado", pNamesEN[p] + ": Completed", "Godhome", "Godhome", stBool(completed), "P" + std::to_string(p)});
+        CheckItem nailCI{pNamesES[p] + ": Vínculo Aguijón", pNamesEN[p] + ": Binding Nail", "Godhome", "Godhome", stBool(boundNail), "P" + std::to_string(p)};
+        nailCI.bindNail = true;
+        res.godhome.push_back(nailCI);
+        CheckItem shellCI{pNamesES[p] + ": Vínculo Cáscara", pNamesEN[p] + ": Binding Shell", "Godhome", "Godhome", stBool(boundShell), "P" + std::to_string(p)};
+        shellCI.bindShell = true;
+        res.godhome.push_back(shellCI);
+        CheckItem charmsCI{pNamesES[p] + ": Vínculo Amuletos", pNamesEN[p] + ": Binding Charms", "Godhome", "Godhome", stBool(boundCharms), "P" + std::to_string(p)};
+        charmsCI.bindCharms = true;
+        res.godhome.push_back(charmsCI);
+        CheckItem soulCI{pNamesES[p] + ": Vínculo Alma", pNamesEN[p] + ": Binding Soul", "Godhome", "Godhome", stBool(boundSoul), "P" + std::to_string(p)};
+        soulCI.bindSoul = true;
+        res.godhome.push_back(soulCI);
+        res.godhome.push_back({pNamesES[p] + ": Todos los vínculos", pNamesEN[p] + ": All Bindings", "Godhome", "Godhome", stBool(allBindings), "P" + std::to_string(p)});
+        res.godhome.push_back({pNamesES[p] + ": Sin daño", pNamesEN[p] + ": No Damage", "Godhome", "Godhome", stBool(noHits), "P" + std::to_string(p)});
     }
     res.godhome.push_back(makeHeader("--- SALÓN DE LOS DIOSES (44 ESTATUAS) ---", "--- HALL OF GODS (44 STATUES) ---"));
     for (const auto& hg : WEB_HALL_OF_GODS) {
@@ -712,6 +796,7 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         if (r >= 2) res.godsAscended++;
         if (r >= 3) res.godsRadiant++;
     }
+
     int doneCount = 0, totalCount = 0;
 
     auto countList = [&](const std::vector<CheckItem>& v) {
@@ -723,12 +808,47 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         }
     };
     countList(res.essentials112);
+    countList(res.essentialsAchievements);
     countList(res.hunterJournal);
     countList(res.collectibles);
     countList(res.geoCaches);
     countList(res.secrets);
+    countList(res.godhome);
     res.trueCompletionPercent = totalCount > 0
         ? (100.0f * (float)doneCount / (float)totalCount) : 0.0f;
+
+    // Now add Godhome Statistics header at the beginning, after counting (so stats are not counted)
+    {
+        std::vector<CheckItem> newGodhome;
+        newGodhome.push_back(makeHeader("--- ESTADÍSTICAS HOGAR DE DIOSES ---", "--- GODHOME STATISTICS ---"));
+        newGodhome.push_back({"Panteones Completados", "Pantheons Completed", "Progreso general", "Overall progress", ItemState::Done, std::to_string(res.pantheonsDone) + "/5"});
+        newGodhome.push_back({"Dioses Desbloqueados", "Gods Unlocked", "Salón de los Dioses", "Hall of Gods", ItemState::Done, std::to_string(res.godsUnlocked) + "/44"});
+        newGodhome.push_back({"Dioses Sintonizados (Attuned)", "Gods Attuned", "Rango 1+", "Rank 1+", ItemState::Done, std::to_string(res.godsAttuned) + "/44"});
+        newGodhome.push_back({"Dioses Ascendidos (Ascended)", "Gods Ascended", "Rango 2+", "Rank 2+", ItemState::Done, std::to_string(res.godsAscended) + "/44"});
+        newGodhome.push_back({"Dioses Radiantes (Radiant)", "Gods Radiant", "Rango 3", "Rank 3", ItemState::Done, std::to_string(res.godsRadiant) + "/44"});
+        newGodhome.insert(newGodhome.end(), res.godhome.begin(), res.godhome.end());
+        res.godhome = std::move(newGodhome);
+    }
+
+    // 8. Statistics (Estadísticas del juego) - after trueCompletionPercent is calculated
+    res.statistics.clear();
+    res.statistics.push_back(makeHeader("--- ESTADÍSTICAS DEL JUEGO ---", "--- GAME STATISTICS ---"));
+    int hours = (int)(res.playTime / 3600.0f);
+    int minutes = (int)((res.playTime - hours * 3600.0f) / 60.0f);
+    res.statistics.push_back({"Tiempo de juego", "Play Time", std::to_string(hours) + "h " + std::to_string(minutes) + "m", std::to_string(hours) + "h " + std::to_string(minutes) + "m", ItemState::Done, ""});
+    res.statistics.push_back({"Geo total", "Total Geo", std::to_string(res.geo), std::to_string(res.geo), ItemState::Done, ""});
+    res.statistics.push_back({"Geo de Sombra", "Shade Geo", std::to_string(res.shadeGeo), std::to_string(res.shadeGeo), ItemState::Done, ""});
+    res.statistics.push_back({"Salud máxima", "Max Health", std::to_string(res.maxHealth) + " / 11", std::to_string(res.maxHealth) + " / 11", ItemState::Done, ""});
+    res.statistics.push_back({"Reserva de orbes", "Orb Reserve", std::to_string(res.mpReserveMax) + " / 330", std::to_string(res.mpReserveMax) + " / 330", ItemState::Done, ""});
+    res.statistics.push_back({"Orbes oníricos", "Dream Orbs", std::to_string(res.dreamOrbs), std::to_string(res.dreamOrbs), ItemState::Done, ""});
+    res.statistics.push_back({"Daño de aguijón", "Nail Damage", std::to_string(res.nailDamage), std::to_string(res.nailDamage), ItemState::Done, ""});
+    res.statistics.push_back({"Hendiduras para amuletos", "Charm Notches", std::to_string(res.charmSlots) + " / 11", std::to_string(res.charmSlots) + " / 11", ItemState::Done, ""});
+    res.statistics.push_back({"Mineral pálido", "Pale Ore", std::to_string(res.paleOre), std::to_string(res.paleOre), ItemState::Done, ""});
+    res.statistics.push_back({"Llaves simples", "Simple Keys", std::to_string(res.simpleKeys), std::to_string(res.simpleKeys), ItemState::Done, ""});
+    res.statistics.push_back({"Larvas rescatadas", "Grubs Rescued", std::to_string(res.grubsCollected) + " / 46", std::to_string(res.grubsCollected) + " / 46", ItemState::Done, ""});
+    res.statistics.push_back({"Rocas de Geo rotas", "Geo Rocks Broken", std::to_string(res.geoRocksBroken) + " / 207", std::to_string(res.geoRocksBroken) + " / 207", ItemState::Done, ""});
+    res.statistics.push_back({"Alma de Acero", "Steel Soul", res.isSteelSoul ? "Activado" : "Desactivado", res.isSteelSoul ? "On" : "Off", ItemState::Done, ""});
+    res.statistics.push_back({"Completado verdadero", "True Completion", std::to_string((int)res.trueCompletionPercent) + "%", std::to_string((int)res.trueCompletionPercent) + "%", ItemState::Done, ""});
 
     return res;
 }

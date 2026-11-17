@@ -266,33 +266,37 @@ void renderFileBrowser(SDL_Renderer* ren, const UIAssets& ui, TTF_Font* fontLg,
 }
 
 std::string getTabDescription(int tabIndex, bool isES) {
+    if (tabIndex == 0)
+        return isES
+            ? "Progreso principal: Jefes, Amuletos, Equipo, Mejoras de Aguijón, Artes, Hechizos, Fragmentos y más."
+            : "Main progress: Bosses, Charms, Equipment, Nail Upgrades, Arts, Spells, Fragments and more.";
     if (tabIndex == 1)
         return isES
-            ? "Cada elemento suma % oficial. Nota: Solo la mitad de jefes suman %. P1-P4 = dificultad y qué Panteón desbloquea."
-            : "Each item provides 1-4% Game Completion. Note: Only ~half of bosses count. P1-P4 = difficulty & which Pantheon it unlocks.";
+            ? "Esenciales para el % de completado del juego y logros. Collectibles, Stag Stations, World Interactions, Bosses."
+            : "Essentials for game completion % and achievements. Collectibles, Stag Stations, World Interactions, Bosses.";
     if (tabIndex == 2)
         return isES
-            ? "Pistas de Elderbug y requisitos clave para logros e historia."
-            : "Elderbug hints and key requirements for story and achievements.";
+            ? "146 entradas base para la Marca del Cazador. Las entradas opcionales no cuentan."
+            : "146 base entries for Hunter's Mark. Optional entries do not count.";
     if (tabIndex == 3)
         return isES
-            ? "146 entradas base completadas para la Marca del Cazador. Las opcionales no cuentan."
-            : "146 base completed entries required for Hunter's Mark. Optional entries do not count.";
+            ? "Hendiduras para amuletos, 46 Larvas, 15 Raíces Susurrantes, Reliquias, Huevos Pútridos y Objetos."
+            : "Charm Notches, 46 Grubs, 15 Whispering Roots, Relics, Rancid Eggs and Items.";
     if (tabIndex == 4)
-        return isES
-            ? "46 Larvas, 15 Raíces Susurrantes y 43 Reliquias individuales de Hallownest."
-            : "46 Grubs, 15 Whispering Roots, and 43 individual Relics across Hallownest.";
-    if (tabIndex == 5)
         return isES
             ? "Cofres principales de Geo y las 207 Rocas de Geo individuales del mapa."
             : "Main Geo chests and all 207 individual Geo rocks across the map.";
+    if (tabIndex == 5)
+        return isES
+            ? "Interacciones del mundo, salas secretas y notas de Cornifer."
+            : "World interactions, secret rooms and Cornifer's notes.";
     if (tabIndex == 6)
         return isES
-            ? "Salas ocultas, interacciones secretas del mundo y encuentros especiales."
-            : "Hidden rooms, secret world interactions, and special encounters.";
+            ? "Estadísticas del Hogar de los Dioses, Panteones P1-P5 y 44 estatuas del Salón de los Dioses."
+            : "Godhome statistics, Pantheons P1-P5 and 44 Hall of Gods boss statues.";
     return isES
-        ? "Panteones del Hogar de los Dioses (P1-P4 = 1% cada uno) y 44 estatuas del Salón de los Dioses."
-        : "Pantheons of Godhome (P1-P4 = 1% each) and 44 Hall of Gods boss statues.";
+        ? "Estadísticas generales del juego: tiempo, Geo, salud, reserva de orbes y más."
+        : "General game statistics: play time, Geo, health, orb reserve and more.";
 }
 
 void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
@@ -300,13 +304,10 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
                           TTF_Font* fontSm, TTF_Font* fontXs,
                           TTF_Font* fontIcon, SaveAnalysis& data,
                           int tabIndex, int scrollOffset, bool onlyMissing,
-                          bool showSpoilers, bool showHints,
-                          bool headerSpoilerRevealed,
-                          bool mainStatusCollapsed,
-                          bool mainGameStatsCollapsed,
-                          bool mainGodStatsCollapsed, bool isES,
+                          bool showSpoilers, bool isES,
                           int& outRowStartY, int& outRowH,
-                          std::vector<int>& outVisibleIndices) {
+                          std::vector<int>& outVisibleIndices,
+                          int selectedRowIndex) {
     SDL_Color headerBg{8, 20, 38, 225};
     SDL_Color hkBlue{30, 77, 108, 255};
     SDL_Color hkHighlight{46, 93, 124, 240};
@@ -340,12 +341,12 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
              data.trueCompletionPercent >= 100.0f ? green : SDL_Color{110, 195, 245, 255}, true);
 
     const std::vector<std::string> tabsES = {
-        "PRINCIPAL", "ESENCIALES %", "LOGROS", "DIARIO",
-        "COLECCIONABLES", "ALIJOS GEO", "SECRETOS", "HOGAR DIOSES"
+        "MAIN", "ESENCIALES", "DIARIO",
+        "COLECCIONABLES", "ALIJOS GEO", "SECRETOS", "GODMASTER", "ESTADÍSTICAS"
     };
     const std::vector<std::string> tabsEN = {
-        "MAIN", "ESSENTIALS %", "ACHIEVEMENTS", "JOURNAL",
-        "COLLECTIBLES", "GEO CACHES", "SECRETS", "GODHOME"
+        "MAIN", "ESSENTIALS", "JOURNAL",
+        "COLLECTIBLES", "GEO CACHES", "SECRETS", "GODMASTER", "STATISTICS"
     };
     const auto& tabs = isES ? tabsES : tabsEN;
 
@@ -359,170 +360,94 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
         drawText(ren, fontXs, tLabel, tx + 6, 95, active ? white : gray);
     }
 
-    drawRect(ren, 36, 134, 1208, 520, {8, 20, 38, 175});
-    drawBorder(ren, 36, 134, 1208, 520, hkBlue);
+    // --- Status bar (only on MAIN tab) ---
+    bool showStatusBar = (tabIndex == 0);
+    int contentTopY = showStatusBar ? 238 : 134;
+    int contentHeight = showStatusBar ? 416 : 520;
+    int descY = showStatusBar ? 248 : 144;
+    int btnY = showStatusBar ? 296 : 192;
+    int rowStartY = showStatusBar ? 338 : 234;
+    int maxRows = showStatusBar ? 4 : 6;
 
-    if (tabIndex == 0) {
-        drawRect(ren, 56, 140, 340, 32, showHints ? hkHighlight : SDL_Color{55, 60, 70, 230});
-        drawBorder(ren, 56, 140, 340, 32, gold);
-        drawText(ren, fontSm, showHints ? (isES ? "Hints [X]: ACTIVADAS" : "Hints [X]: ON")
-                                        : (isES ? "Hints [X]: OCULTAS"   : "Hints [X]: OFF"), 70, 146, white);
+    if (showStatusBar) {
+        int sbY = 134;
+        int sbH = 100;
+        drawRect(ren, 36, sbY, 1208, sbH, {8, 20, 38, 175});
+        drawBorder(ren, 36, sbY, 1208, sbH, hkBlue);
 
-        drawRect(ren, 412, 140, 340, 32, !showSpoilers ? SDL_Color{85, 55, 20, 240} : hkHighlight);
-        drawBorder(ren, 412, 140, 340, 32, gold);
-        drawText(ren, fontSm, showSpoilers ? (isES ? "Spoilers [Y]: VISIBLES" : "Spoilers [Y]: SHOWN")
-                                           : (isES ? "Spoilers [Y]: OCULTOS" : "Spoilers [Y]: HIDDEN"), 426, 146, white);
+        // Masks
+        drawText(ren, fontSm, (isES ? "MÁSCARAS (" : "MASKS (") + std::to_string(data.maxHealth) + "/9):", 56, sbY + 10, gray);
+        SDL_Texture* mTex = data.isSteelSoul ? ui.maskSteel : ui.maskNormal;
+        int maskX = 200;
+        for (int i = 0; i < 9; ++i)
+            drawTex(ren, mTex, maskX + i * 35, sbY + 4, 28, 34, (i < data.maxHealth) ? 255 : 55);
 
-        int curY = 178;
-        if (showHints) {
-            drawRect(ren, 56, curY, 1168, 44, {14, 32, 54, 230});
-            drawBorder(ren, 56, curY, 1168, 44, gold);
-            const auto& hintVec = isES ? WEB_ELDERBUG_HINTS_ES : WEB_ELDERBUG_HINTS;
-            std::string hintPrefix = isES ? "Elderbug me dijo una vez... " : "Elderbug once told me... ";
-            std::string hintBody = "";
-            if (!hintVec.empty()) {
-                int safeH = std::max(0, std::min(data.elderbugHintIdx, (int)hintVec.size() - 1));
-                hintBody = hintVec[safeH];
-            }
-            std::string hintTxt = applySpoilerMask(hintPrefix + hintBody, showSpoilers || headerSpoilerRevealed);
-            drawText(ren, fontSm, hintTxt, 72, curY + 12, gold);
-            curY += 50;
+        // Soul vessels
+        int vessels = data.mpReserveMax / 33;
+        drawText(ren, fontSm, (isES ? "ALMA (" : "SOUL (") + std::to_string(vessels) + "/3):", 56, sbY + 44, gray);
+        for (int i = 0; i < 3; ++i)
+            drawTex(ren, ui.soulOrb, 200 + i * 42, sbY + 38, 32, 32, (i < vessels) ? 255 : 55);
+
+        // Charm notches
+        drawText(ren, fontSm, (isES ? "MUESCAS (" : "NOTCHES (") + std::to_string(data.charmSlots) + "/11):", 56, sbY + 74, gray);
+        for (int i = 0; i < 11; ++i) {
+            SDL_Texture* nTex = (i < data.charmSlots) ? ui.notchFull : ui.notchEmpty;
+            if (data.overcharmed && i == data.charmSlots - 1) nTex = ui.notchOver;
+            drawTex(ren, nTex, 200 + i * 27, sbY + 70, 22, 22, 255);
         }
 
-        drawRect(ren, 56, curY, 1168, 34, {18, 44, 72, 235});
-        drawBorder(ren, 56, curY, 1168, 34, gold);
-        std::string a1 = mainStatusCollapsed ? "\xE2\x96\xB6  " : "\xE2\x96\xBC  ";
-        drawText(ren, fontSm, a1 + (isES ? "ESTADO DEL JUEGO (GAME STATUS)" : "GAME STATUS"), 72, curY + 7, gold);
-        curY += 38;
-
-        if (!mainStatusCollapsed) {
-            drawRect(ren, 56, curY, 1168, 128, {5, 13, 25, 195});
-            drawBorder(ren, 56, curY, 1168, 128, hkBlue);
-
-            drawText(ren, fontSm, (isES ? "MÁSCARAS (" : "MASKS (") + std::to_string(data.maxHealth) + "/9):", 74, curY + 10, gray);
-            SDL_Texture* mTex = data.isSteelSoul ? ui.maskSteel : ui.maskNormal;
-            for (int i = 0; i < 9; ++i)
-                drawTex(ren, mTex, 275 + i * 35, curY + 4, 28, 34, (i < data.maxHealth) ? 255 : 55);
-
-            int vessels = data.mpReserveMax / 33;
-            drawText(ren, fontSm, (isES ? "ALMA (" : "SOUL (") +
-                     std::to_string(vessels) + "/3):", 74, curY + 48, gray);
-            for (int i = 0; i < 3; ++i)
-                drawTex(ren, ui.soulOrb, 275 + i * 42, curY + 42, 32, 32,
-                        (i < vessels) ? 255 : 55);
-
-            drawText(ren, fontSm, (isES ? "MUESCAS (" : "NOTCHES (") +
-                     std::to_string(data.charmSlots) + "/11):", 74, curY + 88, gray);
-            for (int i = 0; i < 11; ++i) {
-                SDL_Texture* nTex = (i < data.charmSlots) ? ui.notchFull : ui.notchEmpty;
-                if (data.overcharmed && i == data.charmSlots - 1) nTex = ui.notchOver;
-                drawTex(ren, nTex, 275 + i * 27, curY + 84, 22, 22, 255);
-            }
-
-            int gx = 635;
-            gx += drawText(ren, fontMd, "Geo: ", gx, curY + 10, white);
-            drawTex(ren, ui.geoIcon, gx, curY + 8, 24, 24, 255);
+        // Geo (right side)
+        int gx = 635;
+        gx += drawText(ren, fontMd, "Geo: ", gx, sbY + 10, white);
+        drawTex(ren, ui.geoIcon, gx, sbY + 8, 24, 24, 255);
+        gx += 28;
+        gx += drawText(ren, fontMd, std::to_string(data.geo), gx, sbY + 10, gold);
+        if (data.shadeGeo > 0) {
+            gx += drawText(ren, fontMd, " + ", gx, sbY + 10, gray);
+            drawTex(ren, ui.geoShade, gx, sbY + 8, 24, 24, 255);
             gx += 28;
-            gx += drawText(ren, fontMd, std::to_string(data.geo), gx, curY + 10, gold);
-            if (data.shadeGeo > 0) {
-                gx += drawText(ren, fontMd, " + ", gx, curY + 10, gray);
-                drawTex(ren, ui.geoShade, gx, curY + 8, 24, 24, 255);
-                gx += 28;
-                gx += drawText(ren, fontMd, std::to_string(data.shadeGeo), gx, curY + 10, red);
-                drawText(ren, fontSm, "  Total: " + std::to_string(data.geo + data.shadeGeo),
-                         gx + 6, curY + 13, white);
-            }
+            gx += drawText(ren, fontMd, std::to_string(data.shadeGeo), gx, sbY + 10, red);
+            drawText(ren, fontSm, "  Total: " + std::to_string(data.geo + data.shadeGeo),
+                     gx + 6, sbY + 13, white);
+        }
 
-            int hours = (int)(data.playTime / 3600.0f);
-            int mins = (int)((data.playTime - hours * 3600) / 60.0f);
-            char timeBuf[64];
-            snprintf(timeBuf, sizeof(timeBuf), "%dh %02dm", hours, mins);
-
-            drawGlyph(ren, fontIcon, 0xe804, 637, curY + 48, white);
-            drawText(ren, fontSm, (isES ? "Tiempo: " : "Time Played: ") +
+        // Time played & save version
+        int hours = (int)(data.playTime / 3600.0f);
+        int mins = (int)((data.playTime - hours * 3600) / 60.0f);
+        char timeBuf[64];
+        snprintf(timeBuf, sizeof(timeBuf), "%dh %02dm", hours, mins);
+        drawGlyph(ren, fontIcon, 0xe804, 637, sbY + 44, white);
+        drawText(ren, fontSm, (isES ? "Tiempo: " : "Time Played: ") +
                      std::string(timeBuf) + "   |   Save v" + data.saveVersion +
                      (data.isSteelSoul ? (isES ? "  [ALMA DE ACERO]" : "  [STEEL SOUL]") : ""),
-                     667, curY + 48, white);
+                     667, sbY + 44, white);
 
-            char compLine[128];
-            snprintf(compLine, sizeof(compLine),
-                     isES ? "Oficial: %.1f%% / 112%%   |   True Completion: %.1f%%"
-                          : "Game Completion: %.1f%% / 112%%   |   True Completion: %.1f%%",
-                     data.completionPercent, data.trueCompletionPercent);
-            drawText(ren, fontSm, compLine, 635, curY + 86, SDL_Color{120, 195, 245, 255});
-            curY += 134;
-        }
-
-        drawRect(ren, 56, curY, 1168, 34, {18, 44, 72, 235});
-        drawBorder(ren, 56, curY, 1168, 34, gold);
-        std::string a2 = mainGameStatsCollapsed ? "\xE2\x96\xB6  " : "\xE2\x96\xBC  ";
-        drawText(ren, fontSm, a2 + (isES ? "ESTADÍSTICAS DEL JUEGO (GAME STATISTICS)"
-                                         : "GAME STATISTICS"), 72, curY + 7, gold);
-        curY += 38;
-
-        if (!mainGameStatsCollapsed) {
-            drawRect(ren, 56, curY, 1168, 76, {5, 13, 25, 195});
-            drawBorder(ren, 56, curY, 1168, 76, hkBlue);
-
-            drawText(ren, fontSm,
-                     (isES ? "Diario Cazador: " : "Hunter's Journal: ") +
-                     std::to_string(data.journalCompleted) + "/" + std::to_string(data.journalTotal) +
-                     (isES ? "   |   Larvas: " : "   |   Grubs Rescued: ") +
-                     std::to_string(data.grubsCollected) + "/46" +
-                     (isES ? "   |   Esencia: " : "   |   Dream Essence: ") +
-                     std::to_string(data.dreamOrbs), 74, curY + 12, white);
-
-            drawText(ren, fontSm,
-                     (isES ? "Daño Aguijón: " : "Nail Damage: ") + std::to_string(data.nailDamage) +
-                     (isES ? "   |   Mineral Pálido: " : "   |   Pale Ore: ") + std::to_string(data.paleOre) +
-                     (isES ? "   |   Llaves Simples: " : "   |   Simple Keys: ") + std::to_string(data.simpleKeys) +
-                     (isES ? "   |   Rocas Geo: " : "   |   Geo Rocks: ") +
-                     std::to_string(data.geoRocksBroken) + "/207", 74, curY + 44, gray);
-            curY += 82;
-        }
-
-        drawRect(ren, 56, curY, 1168, 34, {18, 44, 72, 235});
-        drawBorder(ren, 56, curY, 1168, 34, gold);
-        std::string a3 = mainGodStatsCollapsed ? "\xE2\x96\xB6  " : "\xE2\x96\xBC  ";
-        drawText(ren, fontSm, a3 + applySpoilerMask(
-            isES ? "ESTADÍSTICAS HOGAR DE DIOSES (GODHOME)" : "GODHOME STATISTICS",
-            showSpoilers), 72, curY + 7, gold);
-        curY += 38;
-
-        if (!mainGodStatsCollapsed && curY + 74 <= 658) {
-            drawRect(ren, 56, curY, 1168, 72, {5, 13, 25, 195});
-            drawBorder(ren, 56, curY, 1168, 72, hkBlue);
-
-            int totalGods = (int)WEB_HALL_OF_GODS.size();
-            drawText(ren, fontSm,
-                     applySpoilerMask((isES ? "Panteones Completados: " : "Pantheons Completed: ") +
-                     std::to_string(data.pantheonsDone) + "/5   |   " +
-                     (isES ? "Jefes Desbloqueados: " : "Bosses Unlocked: ") +
-                     std::to_string(data.godsUnlocked) + "/" + std::to_string(totalGods),
-                     showSpoilers), 74, curY + 10, white);
-
-            drawText(ren, fontSm,
-                     (isES ? "Sintonizado (Attuned): " : "Attuned: ") + std::to_string(data.godsAttuned) + "/" + std::to_string(totalGods) +
-                     (isES ? "   |   Ascendido (Ascended): " : "   |   Ascended: ") + std::to_string(data.godsAscended) + "/" + std::to_string(totalGods) +
-                     (isES ? "   |   Radiante (Radiant): " : "   |   Radiant: ") + std::to_string(data.godsRadiant) + "/" + std::to_string(totalGods),
-                     74, curY + 42, SDL_Color{120, 195, 245, 255});
-        }
+        // Completion %
+        char compLine[128];
+        snprintf(compLine, sizeof(compLine),
+                 isES ? "Oficial: %.1f%% / 112%%   |   True Completion: %.1f%%"
+                      : "Game Completion: %.1f%% / 112%%   |   True Completion: %.1f%%",
+                 data.completionPercent, data.trueCompletionPercent);
+        drawText(ren, fontSm, compLine, 635, sbY + 74, SDL_Color{120, 195, 245, 255});
     }
-    else {
-        std::vector<CheckItem>* src = &data.essentials112;
-        if (tabIndex == 1) src = &data.essentialsExtra;
-        if (tabIndex == 2) src = &data.achievementsHints;
-        if (tabIndex == 3) src = &data.hunterJournal;
-        if (tabIndex == 4) src = &data.collectibles;
-        if (tabIndex == 5) src = &data.geoCaches;
-        if (tabIndex == 6) src = &data.secrets;
-        if (tabIndex == 7) src = &data.godhome;
 
-        drawRect(ren, 56, 144, 1168, 40, {5, 13, 25, 210});
-        drawBorder(ren, 56, 144, 1168, 40, hkBlue);
-        std::string desc = applySpoilerMask(getTabDescription(tabIndex, isES),
-                                            showSpoilers || headerSpoilerRevealed);
-        drawText(ren, fontSm, desc, 70, 155, gray);
+    drawRect(ren, 36, contentTopY, 1208, contentHeight, {8, 20, 38, 175});
+    drawBorder(ren, 36, contentTopY, 1208, contentHeight, hkBlue);
+
+    {
+        std::vector<CheckItem>* src = &data.essentials112;
+        if (tabIndex == 1) src = &data.essentialsAchievements;
+        if (tabIndex == 2) src = &data.hunterJournal;
+        if (tabIndex == 3) src = &data.collectibles;
+        if (tabIndex == 4) src = &data.geoCaches;
+        if (tabIndex == 5) src = &data.secrets;
+        if (tabIndex == 6) src = &data.godhome;
+        if (tabIndex == 7) src = &data.statistics;
+
+        drawRect(ren, 56, descY, 1168, 40, {5, 13, 25, 210});
+        drawBorder(ren, 56, descY, 1168, 40, hkBlue);
+        std::string desc = applySpoilerMask(getTabDescription(tabIndex, isES), showSpoilers);
+        drawText(ren, fontSm, desc, 70, descY + 11, gray);
 
         bool sectionCollapsed = false;
         std::vector<int> filteredIdx;
@@ -536,28 +461,27 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
             }
         }
 
-        drawRect(ren, 56, 192, 340, 34, onlyMissing ? SDL_Color{110, 35, 45, 240} : hkHighlight);
-        drawBorder(ren, 56, 192, 340, 34, gold);
+        drawRect(ren, 56, btnY, 340, 34, onlyMissing ? SDL_Color{110, 35, 45, 240} : hkHighlight);
+        drawBorder(ren, 56, btnY, 340, 34, gold);
         std::string fTxt = onlyMissing
             ? (isES ? "Filtro [X]: FALTANTES (" : "Filter [X]: MISSING (") + std::to_string(filteredIdx.size()) + ")"
             : (isES ? "Filtro [X]: TODOS (" : "Filter [X]: ALL (") + std::to_string(filteredIdx.size()) + ")";
-        drawText(ren, fontSm, fTxt, 68, 199, gold);
+        drawText(ren, fontSm, fTxt, 68, btnY + 7, gold);
 
-        drawRect(ren, 412, 192, 340, 34, !showSpoilers ? SDL_Color{85, 55, 20, 240} : hkHighlight);
-        drawBorder(ren, 412, 192, 340, 34, gold);
+        drawRect(ren, 412, btnY, 340, 34, !showSpoilers ? SDL_Color{85, 55, 20, 240} : hkHighlight);
+        drawBorder(ren, 412, btnY, 340, 34, gold);
         std::string spTxt = showSpoilers
             ? (isES ? "Spoilers [Y]: VISIBLES" : "Spoilers [Y]: SHOWN")
             : (isES ? "Spoilers [Y]: OCULTOS" : "Spoilers [Y]: HIDDEN");
-        drawText(ren, fontSm, spTxt, 426, 199, white);
+        drawText(ren, fontSm, spTxt, 426, btnY + 7, white);
 
-        drawText(ren, fontSm, isES ? "Toca una fila o subtítulo para plegar/revelar"
-                                   : "Tap row or header to fold/reveal",
-                 1220, 199, SDL_Color{120, 195, 245, 255}, true);
+        drawText(ren, fontSm, isES ? "[A] Plegar/Revelar fila seleccionada"
+                                   : "[A] Fold/Reveal selected row",
+                 1220, btnY + 7, SDL_Color{120, 195, 245, 255}, true);
 
-        int maxRows = 6;
         int maxSc = std::max(0, (int)filteredIdx.size() - maxRows);
         int safeScroll = std::max(0, std::min(scrollOffset, maxSc));
-        outRowStartY = 234;
+        outRowStartY = rowStartY;
         outRowH = 66;
         outVisibleIndices.clear();
 
@@ -566,6 +490,7 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
             outVisibleIndices.push_back(realIdx);
             int y = outRowStartY + (i - safeScroll) * outRowH;
             const auto& item = (*src)[realIdx];
+            bool isSelected = (i == selectedRowIndex);
 
                         if (item.isHeader) {
                 int subDone = 0, subTot = 0;
@@ -575,13 +500,15 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
                         if ((*src)[k].state == ItemState::Done) subDone++;
                     }
                 }
-                drawRect(ren, 56, y + 10, 1168, 42, {18, 44, 72, 235});
-                drawBorder(ren, 56, y + 10, 1168, 42, gold);
+                SDL_Color headerCol = isSelected ? SDL_Color{245, 205, 100, 255} : SDL_Color{18, 44, 72, 235};
+                SDL_Color headerBorder = isSelected ? white : gold;
+                drawRect(ren, 56, y + 10, 1168, 42, headerCol);
+                drawBorder(ren, 56, y + 10, 1168, 42, headerBorder);
                 std::string cleanTitle = item.name(isES);
                 if (cleanTitle.size() > 8 && cleanTitle.substr(0, 4) == "--- ")
                     cleanTitle = cleanTitle.substr(4, cleanTitle.size() - 8);
                 std::string arrow = item.isCollapsed ? "\xE2\x96\xB6  " : "\xE2\x96\xBC  ";
-                drawText(ren, fontMd, arrow + cleanTitle, 76, y + 19, gold);
+                drawText(ren, fontMd, arrow + cleanTitle, 76, y + 19, isSelected ? white : gold);
 
                 if (subTot > 0) {
                     bool allOk = (subDone == subTot);
@@ -600,11 +527,16 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
             bool isPartial = (item.state == ItemState::Partial);
             bool isUnavail = (item.state == ItemState::Unavailable);
 
-            drawRect(ren, 56, y, 1168, 60, {5, 13, 25, 195});
-            drawBorder(ren, 56, y, 1168, 60,
-                       isDone ? SDL_Color{40, 95, 65, 255}
-                              : (isUnavail ? SDL_Color{65, 70, 80, 255}
-                                           : SDL_Color{105, 45, 55, 255}));
+            if (isSelected) {
+                drawRect(ren, 56, y, 1168, 60, hkHighlight);
+                drawBorder(ren, 56, y, 1168, 60, {110, 175, 220, 255});
+            } else {
+                drawRect(ren, 56, y, 1168, 60, {5, 13, 25, 195});
+                drawBorder(ren, 56, y, 1168, 60,
+                           isDone ? SDL_Color{40, 95, 65, 255}
+                                  : (isUnavail ? SDL_Color{65, 70, 80, 255}
+                                               : SDL_Color{105, 45, 55, 255}));
+            }
 
             Uint16 glyph = isDone ? 0xf14a : (isUnavail ? 0xf14a : 0xe800);
             SDL_Color gCol = isDone ? green : (isPartial ? gold : (isUnavail ? dimGray : red));
@@ -642,8 +574,8 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
     drawRect(ren, 0, 664, 1280, 56, headerBg);
     drawBorder(ren, 0, 664, 1280, 1, hkBlue);
     drawText(ren, fontSm, isES
-        ? "[L/R/Stick] Sección  [X] Hints/Faltantes  [Y] Spoilers  [-] Idioma  [B] Atrás  [+] Salir"
-        : "[L/R/Stick] Tab  [X] Hints/Missing  [Y] Spoilers  [-] Lang  [B] Back  [+] Exit",
+        ? "[L/R] Sección  [Arriba/Abajo] Seleccionar  [A] Plegar/Revelar  [X] Faltantes  [Y] Spoilers  [B] Atrás"
+        : "[L/R] Tab  [Up/Down] Select  [A] Fold/Reveal  [X] Missing  [Y] Spoilers  [B] Back",
         36, 681, white);
 }
 int main(int argc, char* argv[]) {
@@ -718,13 +650,11 @@ int main(int argc, char* argv[]) {
     std::vector<FileEntry> entries = getDirectoryContents(currentPath, isES);
     int selectedIndex = entries.size() > 1 ? 1 : 0;
     int tabIndex = 0, scrollOffset = 0;
-    bool onlyMissing = false, showSpoilers = false, showHints = true;
-    bool headerSpoilerRevealed = false;
-    bool mainStatusCollapsed = false, mainGameStatsCollapsed = false, mainGodStatsCollapsed = false;
-
+    bool onlyMissing = false, showSpoilers = false;
     int listY = 100, rowH = 48, startIdx = 0;
-    int anaRowStartY = 234, anaRowH = 66;
+    int anaRowStartY = 338, anaRowH = 66;
     std::vector<int> anaVisibleIndices;
+    int selectedRowIndex = 0;
     float lastTouchY = -1.0f;
     Uint32 lastBtnTick = 0, lastStickTick = 0;
 
@@ -760,52 +690,29 @@ int main(int argc, char* argv[]) {
                 } else {
                     if (ty >= 82 && ty <= 124) {
                         int clickedTab = (tx - 36) / 152;
-                        if (clickedTab >= 0 && clickedTab < 8) { tabIndex = clickedTab; scrollOffset = 0; headerSpoilerRevealed = false; }
+                        if (clickedTab >= 0 && clickedTab < 8) { tabIndex = clickedTab; scrollOffset = 0; }
                     }
                     Uint32 now = SDL_GetTicks();
-                    if (tabIndex == 0 && now - lastBtnTick > 220) {
-                        if (ty >= 140 && ty <= 172 && tx >= 56 && tx <= 396) { lastBtnTick = now; showHints = !showHints; }
-                        else if (ty >= 140 && ty <= 172 && tx >= 412 && tx <= 752) { lastBtnTick = now; showSpoilers = !showSpoilers; }
-                        else {
-                            int yPtr = 178;
-                            if (showHints) {
-                                if (ty >= yPtr && ty <= yPtr + 44 && tx >= 56 && tx <= 1224) { lastBtnTick = now; headerSpoilerRevealed = !headerSpoilerRevealed; }
-                                yPtr += 50;
-                            }
-                                                        if (ty >= yPtr && ty <= yPtr + 34 && tx >= 56 && tx <= 1224) {
-                                lastBtnTick = now;
-                                mainStatusCollapsed = !mainStatusCollapsed;
-                            } else if (ty >= anaRowStartY && ty < 650 && !anaVisibleIndices.empty()) {
-                                int clickedRow = (ty - anaRowStartY) / anaRowH;
-                                if (clickedRow >= 0 && clickedRow < (int)anaVisibleIndices.size()) {
-                                    lastBtnTick = now;
-                                    int realIdx = anaVisibleIndices[clickedRow];
-                                    if (currentSave.essentials112[realIdx].isHeader)
-                                        currentSave.essentials112[realIdx].isCollapsed = !currentSave.essentials112[realIdx].isCollapsed;
-                                    else
-                                        currentSave.essentials112[realIdx].individuallyRevealed = !currentSave.essentials112[realIdx].individuallyRevealed;
-                                }
-                            }
-
-                        }
-                    }
-                    if (tabIndex > 0 && now - lastBtnTick > 220) {
-                        if (ty >= 140 && ty <= 188 && tx >= 56 && tx <= 1224) { lastBtnTick = now; headerSpoilerRevealed = !headerSpoilerRevealed; }
-                        else if (ty >= 190 && ty <= 228 && tx >= 56 && tx <= 396) { lastBtnTick = now; onlyMissing = !onlyMissing; scrollOffset = 0; }
-                        else if (ty >= 190 && ty <= 228 && tx >= 412 && tx <= 752) { lastBtnTick = now; showSpoilers = !showSpoilers; }
-                        else if (ty >= anaRowStartY && ty < 640 && !anaVisibleIndices.empty()) {
-                            int clickedRow = (ty - anaRowStartY) / anaRowH;
+                    int touchBtnY = (tabIndex == 0) ? 296 : 192;
+                    int touchRowTop = (tabIndex == 0) ? 338 : 234;
+                    int touchRowBottom = (tabIndex == 0) ? 654 : 654;
+                    if (now - lastBtnTick > 220) {
+                        if (ty >= touchBtnY && ty <= touchBtnY + 34 && tx >= 56 && tx <= 396) { lastBtnTick = now; onlyMissing = !onlyMissing; scrollOffset = 0; selectedRowIndex = 0; }
+                        else if (ty >= touchBtnY && ty <= touchBtnY + 34 && tx >= 412 && tx <= 752) { lastBtnTick = now; showSpoilers = !showSpoilers; }
+                        else if (ty >= touchRowTop && ty < touchRowBottom && !anaVisibleIndices.empty()) {
+                            int clickedRow = (ty - touchRowTop) / anaRowH;
                             if (clickedRow >= 0 && clickedRow < (int)anaVisibleIndices.size()) {
                                 lastBtnTick = now;
+                                selectedRowIndex = clickedRow + scrollOffset;
                                 int realIdx = anaVisibleIndices[clickedRow];
                                 std::vector<CheckItem>* src = &currentSave.essentials112;
-                                if (tabIndex == 1) src = &currentSave.essentialsExtra;
-                                if (tabIndex == 2) src = &currentSave.achievementsHints;
-                                if (tabIndex == 3) src = &currentSave.hunterJournal;
-                                if (tabIndex == 4) src = &currentSave.collectibles;
-                                if (tabIndex == 5) src = &currentSave.geoCaches;
-                                if (tabIndex == 6) src = &currentSave.secrets;
-                                if (tabIndex == 7) src = &currentSave.godhome;
+                                if (tabIndex == 1) src = &currentSave.essentialsAchievements;
+                                if (tabIndex == 2) src = &currentSave.hunterJournal;
+                                if (tabIndex == 3) src = &currentSave.collectibles;
+                                if (tabIndex == 4) src = &currentSave.geoCaches;
+                                if (tabIndex == 5) src = &currentSave.secrets;
+                                if (tabIndex == 6) src = &currentSave.godhome;
+                                if (tabIndex == 7) src = &currentSave.statistics;
                                 if ((*src)[realIdx].isHeader) (*src)[realIdx].isCollapsed = !(*src)[realIdx].isCollapsed;
                                 else (*src)[realIdx].individuallyRevealed = !(*src)[realIdx].individuallyRevealed;
                             }
@@ -818,8 +725,10 @@ int main(int argc, char* argv[]) {
                     int step = (dy < 0) ? 1 : -1;
                     if (!inAnalysisView && !entries.empty())
                         selectedIndex = std::max(0, std::min((int)entries.size() - 1, selectedIndex + step));
-                    else if (inAnalysisView)
+                    else if (inAnalysisView) {
                         scrollOffset = std::max(0, scrollOffset + step);
+                        selectedRowIndex = std::max(0, selectedRowIndex + step);
+                    }
                     lastTouchY = ev.tfinger.y;
                 }
             } else if (ev.type == SDL_FINGERUP) {
@@ -870,6 +779,7 @@ int main(int argc, char* argv[]) {
                         inAnalysisView = true;
                         tabIndex = 0;
                         scrollOffset = 0;
+                        selectedRowIndex = 0;
                         errorToast.clear();
                     } else {
                         errorToast = isES ? analyzed.errorES : analyzed.errorEN;
@@ -884,27 +794,81 @@ int main(int argc, char* argv[]) {
             if (kDown & HidNpadButton_R) {
                 tabIndex = (tabIndex + 1) % 8;
                 scrollOffset = 0;
-                headerSpoilerRevealed = false;
+                selectedRowIndex = 0;
             }
             if (kDown & HidNpadButton_L) {
                 tabIndex = (tabIndex + 7) % 8;
                 scrollOffset = 0;
-                headerSpoilerRevealed = false;
+                selectedRowIndex = 0;
             }
             if (kDown & HidNpadButton_X) {
-                if (tabIndex == 0) showHints = !showHints;
-                else { onlyMissing = !onlyMissing; scrollOffset = 0; }
+                onlyMissing = !onlyMissing; scrollOffset = 0; selectedRowIndex = 0;
             }
             if (kDown & HidNpadButton_Y) showSpoilers = !showSpoilers;
-            if (kDown & HidNpadButton_Down) scrollOffset++;
-            if (kDown & HidNpadButton_Up && scrollOffset > 0) scrollOffset--;
+
+            // Handle selection navigation and A button for all tabs
+            {
+                std::vector<CheckItem>* src = &currentSave.essentials112;
+                if (tabIndex == 1) src = &currentSave.essentialsAchievements;
+                if (tabIndex == 2) src = &currentSave.hunterJournal;
+                if (tabIndex == 3) src = &currentSave.collectibles;
+                if (tabIndex == 4) src = &currentSave.geoCaches;
+                if (tabIndex == 5) src = &currentSave.secrets;
+                if (tabIndex == 6) src = &currentSave.godhome;
+                if (tabIndex == 7) src = &currentSave.statistics;
+
+                // Build filtered index list (same logic as renderAnalysisScreen)
+                bool sectionCollapsed = false;
+                std::vector<int> filteredIdx;
+                for (int idx = 0; idx < (int)src->size(); ++idx) {
+                    if ((*src)[idx].isHeader) {
+                        sectionCollapsed = (*src)[idx].isCollapsed;
+                        filteredIdx.push_back(idx);
+                    } else if (!sectionCollapsed) {
+                        if (!onlyMissing || (*src)[idx].state != ItemState::Done)
+                            filteredIdx.push_back(idx);
+                    }
+                }
+
+                int maxRows = (tabIndex == 0) ? 4 : 6;
+                int maxSc = std::max(0, (int)filteredIdx.size() - maxRows);
+                int safeScroll = std::max(0, std::min(scrollOffset, maxSc));
+                int visibleCount = std::min((int)filteredIdx.size(), safeScroll + maxRows) - safeScroll;
+
+                if (kDown & HidNpadButton_Down) {
+                    if (selectedRowIndex < (int)filteredIdx.size() - 1) {
+                        selectedRowIndex++;
+                    }
+                    if (selectedRowIndex >= safeScroll + maxRows) {
+                        scrollOffset = selectedRowIndex - maxRows + 1;
+                    }
+                }
+                if (kDown & HidNpadButton_Up) {
+                    if (selectedRowIndex > 0) {
+                        selectedRowIndex--;
+                    }
+                    if (selectedRowIndex < safeScroll) {
+                        scrollOffset = selectedRowIndex;
+                    }
+                }
+
+                if (kDown & HidNpadButton_A && !filteredIdx.empty()) {
+                    int visibleIdx = selectedRowIndex - safeScroll;
+                    if (visibleIdx >= 0 && visibleIdx < visibleCount) {
+                        int realIdx = filteredIdx[selectedRowIndex];
+                        if ((*src)[realIdx].isHeader)
+                            (*src)[realIdx].isCollapsed = !(*src)[realIdx].isCollapsed;
+                        else
+                            (*src)[realIdx].individuallyRevealed = !(*src)[realIdx].individuallyRevealed;
+                    }
+                }
+            }
 
             renderAnalysisScreen(ren, ui, fontLg, fontMd, fontSm, fontXs,
                                  fontIcon, currentSave, tabIndex, scrollOffset,
-                                 onlyMissing, showSpoilers, showHints,
-                                 headerSpoilerRevealed, mainStatusCollapsed,
-                                 mainGameStatsCollapsed, mainGodStatsCollapsed,
-                                 isES, anaRowStartY, anaRowH, anaVisibleIndices);
+                                 onlyMissing, showSpoilers,
+                                 isES, anaRowStartY, anaRowH, anaVisibleIndices,
+                                 selectedRowIndex);
         }
         SDL_RenderPresent(ren);
     }

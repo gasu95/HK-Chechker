@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <vector>
 
@@ -185,17 +185,18 @@ inline const std::vector<RawSceneEntry> WEB_RANCID_EGGS = {
 {"rancidEgg7", "Rancid Egg #7", "Huevo podrido #7", "Royal Waterways: Hidden Grub Room", "Canales Reales: Sala de la larva oculta", "Shiny Item(Clone)", "Waterways_04"},
 {"rancidEgg8", "Rancid Egg #8", "Huevo podrido #8", "Royal Waterways: Left of Isma's Grove", "Canales Reales: A la izquierda de Arboleda de Isma", "Shiny Item(Clone)", "Waterways_07"},
 {"rancidEgg9", "Rancid Egg #9", "Huevo podrido #9", "Greenpath: Outside Sheo's Hut", "Sendero Verde: Fuera de la cabaña de Sheo", "Shiny Item", "Fungus1_15"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg2", "Rancid Egg #2", "Huevo podrido #2", "City of Tears: Room Above Lemm", "Ciudad de las Lágrimas: Sala encima de Lemm", "Shiny Item", "Ruins1_05"},
+{"rancidEgg10", "Rancid Egg #10", "Huevo podrido #10", "Greenpath: Outside Mato's Hut", "Sendero Verde: Fuera de la cabaña de Mato", "Shiny Item", "Fungus1_16"},
+{"rancidEgg11", "Rancid Egg #11", "Huevo podrido #11", "Greenpath: Outside Hornet", "Sendero Verde: Fuera de Hornet", "Shiny Item(Clone)", "Fungus1_21"},
+{"rancidEgg12", "Rancid Egg #12", "Huevo podrido #12", "Fungal Wastes: Fungal Core", "Páramos Fúngicos: Núcleo Fúngico", "Shiny Item", "Fungus2_28"},
+{"rancidEgg13", "Rancid Egg #13", "Huevo podrido #13", "Fungal Wastes: Below Mantis Village", "Páramos Fúngicos: Debajo de Aldea Mantis", "Shiny Item(Clone)", "Fungus2_14"},
+{"rancidEgg14", "Rancid Egg #14", "Huevo podrido #14", "Fungal Wastes: Left of Elder Hu", "Páramos Fúngicos: Izquierda de Elder Hu", "Shiny Item(Clone)", "Fungus2_08"},
+{"rancidEgg15", "Rancid Egg #15", "Huevo podrido #15", "City of Tears: Below Cornifer Lift", "Ciudad de las Lágrimas: Debajo del ascensor de Cornifer", "Shiny Item(Clone)", "Ruins1_31"},
+{"rancidEgg16", "Rancid Egg #16", "Huevo podrido #16", "City of Tears: Right Side Main Hub", "Ciudad de las Lágrimas: Área principal derecha", "Shiny Item(Clone)", "Ruins1_09"},
+{"rancidEgg17", "Rancid Egg #17", "Huevo podrido #17", "Deepnest: Right of Fungal Wastes Drop", "Nido Profundo: Derecha de la caída a Páramos Fúngicos", "Shiny Item(Clone)", "Deepnest_36"},
+{"rancidEgg18", "Rancid Egg #18", "Huevo podrido #18", "Deepnest: Left of Hot Spring", "Nido Profundo: Izquierda del manantial caliente", "Shiny Item(Clone)", "Deepnest_03"},
+{"rancidEgg19", "Rancid Egg #19", "Huevo podrido #19", "Deepnest: Nosk Corridor", "Nido Profundo: Corredor de Nosk", "Shiny Item(Clone)", "Deepnest_31"},
+{"rancidEgg20", "Rancid Egg #20", "Huevo podrido #20", "Deepnest: Beast's Den", "Nido Profundo: Guarida de la Bestia", "Shiny Item(Clone)", "Deepnest_Spider_Town"},
+{"rancidEgg21", "Rancid Egg #21", "Huevo podrido #21", "The Hive: Kingdom's Edge Secret", "La Colmena: Secreto del Límite del Reino", "Shiny Item(Clone)", "Hive_03"},
 };
 
 inline const std::vector<RawSceneEntry> WEB_GEO_CHESTS = {
@@ -567,7 +568,7 @@ inline const std::vector<RawJournalEntry> WEB_JOURNAL_BASE = {
 {"GhostXero", "Xero", "Xero", "Resting Grounds: left area", "Tierras de Reposo: Área izquierda"},
 {"GhostHu", "Elder Hu", "Anciano Hu", "Fungal Wastes: above acid bridge", "Páramos Fúngicos: Encima del puente de ácido"},
 {"GhostMarmu", "Marmu", "Marmu", "Queen's Gardens: left of Stag Station", "Jardines de la Reina: A la izquierda de la Estación de ciervo"},
-{"GhostNoEyes", "No Eyes", "Sin Ojos", "Greenpath: Stone Sanctuary, requires Lumafly Lantern", "Sendero Verde: Santuario de Piedra, requiere Lámpara de Lumélula"},
+{"GhostNoEyes", "No Eyes", "Sin Ojos", "Greenpath: Stone Sanctuary, requires Lumafly Lantern", "Sendero Verde: Santuario de Piedra, requiere Linterna de lumélula"},
 {"GhostMarkoth", "Markoth", "Markoth", "Kingdom's Edge, requires Shade Cloak", "Límite del Reino, requiere Capa Sombría"},
 {"GhostGalien", "Galien", "Galien", "Deepnest: below Failed Tramway", "Nido Profundo: Debajo del Tranvía fallido"},
 };
@@ -710,7 +711,7 @@ inline const std::vector<RawEssEntry> WEB_MASK_SHARDS = {
 {"maskShardBretta", "Mask Shard #9", "Fragmento de máscara #9", "Dirtmouth: Bretta's Room, rescue Bretta", "Bocasucia: Sala de Bretta, rescata a Bretta", "Heart Piece", "Room_Bretta"},
 {"maskShardQueensStation", "Mask Shard #10", "Fragmento de máscara #10", "Queen's Station: requires Mantis Claw", "Estación de la Reina: requiere Garra de Mantis", "Heart Piece", "Fungus2_01"},
 {"maskShardWaterways", "Mask Shard #11", "Fragmento de máscara #11", "Royal Waterways: top left area, swim left", "Canales Reales: Área superior izquierda, nada a la izquierda", "Heart Piece", "Waterways_04b"},
-{"maskShardStoneSanctuary", "Mask Shard #12", "Fragmento de máscara #12", "Greenpath: Stone Sanctuary, Lumafly Lantern", "Sendero Verde: Santuario de Piedra, Lámpara de Lumélula", "Heart Piece", "Fungus1_36"},
+{"maskShardStoneSanctuary", "Mask Shard #12", "Fragmento de máscara #12", "Greenpath: Stone Sanctuary, Lumafly Lantern", "Sendero Verde: Santuario de Piedra, Linterna de lumélula", "Heart Piece", "Fungus1_36"},
 {"maskShardCrystalPeak", "Mask Shard #13", "Fragmento de máscara #13", "Crystal Peak: defeat Enraged Guardian", "Cumbre de Cristal: Derrota al Guardián Airado", "Heart Piece", "Mines_32"},
 {"maskShardDeepnest", "Mask Shard #14", "Fragmento de máscara #14", "Deepnest: from Fungal Core (Monarch Wings)", "Nido Profundo: Desde el Núcleo Fúngico (Alas de Monarca)", "Heart Piece", "Fungus2_25"},
 {"maskShardHive", "Mask Shard #15", "Fragmento de máscara #15", "The Hive: use Hive Guardian to break wall", "La Colmena: Usa Guardián de colmena para romper pared", "Heart Piece", "Hive_04"},
@@ -796,18 +797,18 @@ inline const std::vector<RawEssEntry> WEB_RANCID_EGGS_2 = {
 {"rancidEgg7", "Rancid Egg #7", "Huevo podrido #7", "Royal Waterways: Hidden Grub Room", "Canales Reales: Sala de la larva oculta", "Shiny Item(Clone)", "Waterways_04"},
 {"rancidEgg8", "Rancid Egg #8", "Huevo podrido #8", "Royal Waterways: Left of Isma's Grove", "Canales Reales: A la izquierda de Arboleda de Isma", "Shiny Item(Clone)", "Waterways_07"},
 {"rancidEgg9", "Rancid Egg #9", "Huevo podrido #9", "Greenpath: Outside Sheo's Hut", "Sendero Verde: Fuera de la cabaña de Sheo", "Shiny Item", "Fungus1_15"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg1", "Rancid Egg #1", "Huevo podrido #1", "Fungal Wastes: Fungal Core Upper Room", "Páramos Fúngicos: Sala superior del Núcleo Fúngico", "Shiny Item", "Fungus2_29"},
-{"rancidEgg2", "Rancid Egg #2", "Huevo podrido #2", "City of Tears: Room Above Lemm", "Ciudad de las Lágrimas: Sala encima de Lemm", "Shiny Item", "Ruins1_05"},
-};
+{"rancidEgg10", "Rancid Egg #10", "Huevo podrido #10", "Greenpath: Outside Mato's Hut", "Sendero Verde: Fuera de la cabaña de Mato", "Shiny Item", "Fungus1_16"},
+{"rancidEgg11", "Rancid Egg #11", "Huevo podrido #11", "Greenpath: Outside Hornet", "Sendero Verde: Fuera de Hornet", "Shiny Item(Clone)", "Fungus1_21"},
+{"rancidEgg12", "Rancid Egg #12", "Huevo podrido #12", "Fungal Wastes: Fungal Core", "Páramos Fúngicos: Núcleo Fúngico", "Shiny Item", "Fungus2_28"},
+{"rancidEgg13", "Rancid Egg #13", "Huevo podrido #13", "Fungal Wastes: Below Mantis Village", "Páramos Fúngicos: Debajo de Aldea Mantis", "Shiny Item(Clone)", "Fungus2_14"},
+{"rancidEgg14", "Rancid Egg #14", "Huevo podrido #14", "Fungal Wastes: Left of Elder Hu", "Páramos Fúngicos: Izquierda de Elder Hu", "Shiny Item(Clone)", "Fungus2_08"},
+{"rancidEgg15", "Rancid Egg #15", "Huevo podrido #15", "City of Tears: Below Cornifer Lift", "Ciudad de las Lágrimas: Debajo del ascensor de Cornifer", "Shiny Item(Clone)", "Ruins1_31"},
+{"rancidEgg16", "Rancid Egg #16", "Huevo podrido #16", "City of Tears: Right Side Main Hub", "Ciudad de las Lágrimas: Área principal derecha", "Shiny Item(Clone)", "Ruins1_09"},
+{"rancidEgg17", "Rancid Egg #17", "Huevo podrido #17", "Deepnest: Right of Fungal Wastes Drop", "Nido Profundo: Derecha de la caída a Páramos Fúngicos", "Shiny Item(Clone)", "Deepnest_36"},
+{"rancidEgg18", "Rancid Egg #18", "Huevo podrido #18", "Deepnest: Left of Hot Spring", "Nido Profundo: Izquierda del manantial caliente", "Shiny Item(Clone)", "Deepnest_03"},
+{"rancidEgg19", "Rancid Egg #19", "Huevo podrido #19", "Deepnest: Nosk Corridor", "Nido Profundo: Corredor de Nosk", "Shiny Item(Clone)", "Deepnest_31"},
+{"rancidEgg20", "Rancid Egg #20", "Huevo podrido #20", "Deepnest: Beast's Den", "Nido Profundo: Guarida de la Bestia", "Shiny Item(Clone)", "Deepnest_Spider_Town"},
+{"rancidEgg21", "Rancid Egg #21", "Huevo podrido #21", "The Hive: Kingdom's Edge Secret", "La Colmena: Secreto del Límite del Reino", "Shiny Item(Clone)", "Hive_03"},
 
 inline const std::vector<RawEssEntry> WEB_CORNIFER_NOTES = {
 {"corniferNote1", "Note #1: Forgotten Crossroads", "Nota #1: Cruces Olvidados", "Below Big Gruzzer Room", "Debajo de la sala del Gran Gruzzer", "Shiny", "Crossroads_33"},
@@ -819,7 +820,7 @@ inline const std::vector<RawEssEntry> WEB_CORNIFER_NOTES = {
 {"corniferNote7", "Note #7: Resting Grounds", "Nota #7: Tierras de Reposo", "Near the Stag Station", "Cerca de la Estación de ciervo", "Shiny", "RestingGrounds_09"},
 {"corniferNote8", "Note #8: Royal Waterways", "Nota #8: Canales Reales", "Near Fungal Wastes exit", "Cerca de la salida a Páramos Fúngicos", "Shiny", "Waterways_09"},
 {"corniferNote9", "Note #9: Ancient Basin", "Nota #9: Cuenca Antigua", "Below the Tram and Fountain", "Debajo del tranvía y la fuente", "Shiny", "Abyss_04"},
-{"corniferNote1", "Note #1: Forgotten Crossroads", "Nota #1: Cruces Olvidados", "Below Big Gruzzer Room", "Debajo de la sala del Gran Gruzzer", "Shiny", "Crossroads_33"},
+{"corniferNote10", "Note #10: Kingdom's Edge", "Nota #10: Límite del Reino", "Below the King's Station entrance", "Debajo de la entrada de Estación del Rey", "Shiny", "Deepnest_East_03"},
 };
 
 inline const std::vector<RawEssEntry> WEB_ESS_COLL = {
@@ -827,7 +828,7 @@ inline const std::vector<RawEssEntry> WEB_ESS_COLL = {
 {"grubRewards", "Grubfather Rewards Awarded", "Recompensas del Larvapiedrero otorgadas", "46 Rewards total", "46 Recompensas total", "", ""},
 {"charmsOwned", "Charms Owned", "Amuletos poseídos", "40 Charms total, useful for Salubra Notches", "40 Amuletos total, útil para muescas de Salubra", "", ""},
 {"dreamOrbs", "Essence Collected", "Esencia recolectada", "Aguijón Onírico (2400 para completar)", "Aguijón Onírico (2400 para completar)", "", ""},
-{"hasLantern", "Lumafly Lantern", "Lámpara de Lumélula", "Sly: 1800 Geo", "Sly: 1800 Geo", "", ""},
+{"hasLantern", "Lumafly Lantern", "Linterna de lumélula", "Sly: 1800 Geo", "Sly: 1800 Geo", "", ""},
     {"shopkeeperKey", "Shopkeeper's Key", "Crystal Peak, below Quirrel location", "Cumbre de Cristal, debajo de la ubicación de Quirrel", "Cumbre de Cristal, debajo de la ubicación de Quirrel"},
 {"elegantKey", "Elegant Key", "Llave Elegante", "Sly: 800 Geo + Shopkeeper's Key", "Sly: 800 Geo + Llave del Comerciante", "", ""},
 {"loveKey", "Love Key", "Llave del Amor", "Queen's Gardens, near Fungal Wastes", "Jardines de la Reina, cerca de Páramos Fúngicos", "", ""},
