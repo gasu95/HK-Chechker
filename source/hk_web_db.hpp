@@ -809,6 +809,7 @@ inline const std::vector<RawEssEntry> WEB_RANCID_EGGS_2 = {
 {"rancidEgg19", "Rancid Egg #19", "Huevo podrido #19", "Deepnest: Nosk Corridor", "Nido Profundo: Corredor de Nosk", "Shiny Item(Clone)", "Deepnest_31"},
 {"rancidEgg20", "Rancid Egg #20", "Huevo podrido #20", "Deepnest: Beast's Den", "Nido Profundo: Guarida de la Bestia", "Shiny Item(Clone)", "Deepnest_Spider_Town"},
 {"rancidEgg21", "Rancid Egg #21", "Huevo podrido #21", "The Hive: Kingdom's Edge Secret", "La Colmena: Secreto del Límite del Reino", "Shiny Item(Clone)", "Hive_03"},
+};
 
 inline const std::vector<RawEssEntry> WEB_CORNIFER_NOTES = {
 {"corniferNote1", "Note #1: Forgotten Crossroads", "Nota #1: Cruces Olvidados", "Below Big Gruzzer Room", "Debajo de la sala del Gran Gruzzer", "Shiny", "Crossroads_33"},

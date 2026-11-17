@@ -467,12 +467,17 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         {"Rey Pesadilla Grimm", "Nightmare King Grimm", "Bocasucia", "Dirtmouth", stBool(getBool(pd, "killedNightmareGrimm")), "1%"},
         makeHeader("--- PAQUETE DE CONTENIDO VIDA (1%) ---", "--- LIFEBLOOD CONTENT PACK (1%) ---"),
         {"Caballero Colmena", "Hive Knight", "La Colmena", "The Hive", stBool(getBool(pd, "killedHiveKnight")), "1%"},
-        makeHeader("--- PAQUETE DE CONTENIDO GOOMASTER (0%) ---", "--- GOOMASTER CONTENT PACK (0%) ---"),
-        {"Goomaster (Cosmético)", "Goomaster (Cosmetic)", "Forjaguijones", "Nailsmith", stBool(false), "0%"}
+        makeHeader("--- PAQUETE DE CONTENIDO GODMASTER (5%) ---", "--- GODMASTER CONTENT PACK (5%) ---"),
+        {"Afinador de Dioses", "Godtuner", "Pila de Basura", "Junk Pit", stBool(getBool(pd, "hasGodfinder")), "1%"},
+        {"P1 – Panteón del Maestro", "P1 – Pantheon of the Master", "Hogar de Dioses", "Godhome", stBool(getObjBool(pd, "bossDoorStateTier1", "unlocked")), "1%"},
+        {"P2 – Panteón del Artista", "P2 – Pantheon of the Artist", "Hogar de Dioses", "Godhome", stBool(getObjBool(pd, "bossDoorStateTier2", "unlocked")), "1%"},
+        {"P3 – Panteón del Sabio", "P3 – Pantheon of the Sage", "Hogar de Dioses", "Godhome", stBool(getObjBool(pd, "bossDoorStateTier3", "unlocked")), "1%"},
+        {"P4 – Panteón del Caballero", "P4 – Pantheon of the Knight", "Hogar de Dioses", "Godhome", stBool(getObjBool(pd, "bossDoorStateTier4", "unlocked")), "1%"}
     };
 
     // Insert charms after the CHARMS header (index 15 in the initializer list)
     // Index 0: JEFES header, 1-14: 14 bosses, 15: AMULETOS header
+    // (Godfinder Content Pack added after Lifeblood, but CHARMS header stays at 15)
     int charmsHeaderIdx = 15;
     for (size_t i = 0; i < WEB_CHARMS.size(); ++i) {
         const auto& ch = WEB_CHARMS[i];
@@ -730,17 +735,8 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
     res.secrets.push_back({"Nota #9: Cuenca Antigua", "Note #9: Ancient Basin", "Debajo del Tranvía y la fuente", "Below the Tram and Fountain", stBool(getBool(pd, "corniferNote9")), "Note"});
     res.secrets.push_back({"Nota #10: Límite del Reino", "Note #10: Kingdom's Edge", "Debajo de la entrada de Estación del Rey", "Below the King's Station entrance", stBool(getBool(pd, "corniferNote10")), "Note"});
 
-    // 7. Godmaster (Estadísticas + P1-P5 con vínculos + Salón de los Dioses)
+    // 7. Godmaster (P1-P5 con vínculos + Salón de los Dioses)
     res.godhome.clear();
-    res.godhome.push_back(makeHeader("--- ESTADÍSTICAS DE GODHOME ---", "--- GODHOME STATISTICS ---"));
-    res.godhome.push_back({"Memoria del Afinador", "Tuner Memory", "3 Panteones completados, 2% probabilidad", "3 Pantheons completed, 2% chance", stBool(getBool(pd, "seenGGWastes")), "Stat"});
-    res.godhome.push_back({"Puerta de Vida abierta", "Lifeblood Door Open", "8 vínculos de Panteones totales", "8 total Pantheon bindings", stBool(getBool(pd, "blueRoomDoorUnlocked")), "Stat"});
-    res.godhome.push_back({"Diario: Ídolo del Vacío Sintonizado", "Journal: Void Idol Attuned", "Salón de los Dioses: Derrotar todos (Sintonizado)", "Hall of Gods: Defeat All (Attuned)", stBool(getBool(pd, "killedVoidIdol_1")), "Stat"});
-    res.godhome.push_back({"Diario: Ídolo del Vacío Ascendido", "Journal: Void Idol Ascended", "Salón de los Dioses: Derrotar todos (Ascendido)", "Hall of Gods: Defeat All (Ascended)", stBool(getBool(pd, "killedVoidIdol_2")), "Stat"});
-    res.godhome.push_back({"Diario: Ídolo del Vacío Radiante", "Journal: Void Idol Radiant", "Salón de los Dioses: Derrotar todos (Radiante)", "Hall of Gods: Defeat All (Radiant)", stBool(getBool(pd, "killedVoidIdol_3")), "Stat"});
-    res.godhome.push_back({"Diario: Máscara desgastada", "Journal: Weathered Mask", "Tierra de Tormentas: Panteones y vínculos", "Land of Storms: All Pantheons & Bindings", stBool(getBool(pd, "killedGodseekerMask")), "Stat"});
-    res.godhome.push_back({"Intruso descubierto", "Intruder Discovered", "Salón de los Dioses: Estatua de Zote", "Hall of Gods: Zote Statue", stBool(getBool(pd, "zoteStatueWallBroken")), "Stat"});
-    res.godhome.push_back({"El Calvario Eterno", "The Eternal Ordeal", "57 Zotelines derrotados", "57 Zotelings defeated", stBool(getBool(pd, "ordealAchieved")), "Stat"});
     const std::vector<std::string> pNamesES = {"", "P1 - Panteón del Maestro", "P2 - Panteón del Artista", "P3 - Panteón del Sabio", "P4 - Panteón del Caballero", "P5 - Panteón de Hallownest"};
     const std::vector<std::string> pNamesEN = {"", "P1 - Pantheon of the Master", "P2 - Pantheon of the Artist", "P3 - Pantheon of the Sage", "P4 - Pantheon of the Knight", "P5 - Pantheon of Hallownest"};
     for (int p = 1; p <= 5; ++p) {
@@ -771,13 +767,17 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
         res.godhome.push_back({pNamesES[p] + ": Todos los vínculos", pNamesEN[p] + ": All Bindings", "Godhome", "Godhome", stBool(allBindings), "P" + std::to_string(p)});
         res.godhome.push_back({pNamesES[p] + ": Sin daño", pNamesEN[p] + ": No Damage", "Godhome", "Godhome", stBool(noHits), "P" + std::to_string(p)});
     }
-    res.godhome.push_back(makeHeader("--- SALÓN DE LOS DIOSES (44 ESTATUAS) ---", "--- HALL OF GODS (44 STATUES) ---"));
+    res.godhome.push_back(makeHeader("--- SALÓN DE LOS DIOSES (176 ÍTEMS) ---", "--- HALL OF GODS (176 ITEMS) ---"));
     for (const auto& hg : WEB_HALL_OF_GODS) {
         std::string stKey = "statueState" + hg.id;
-        int rank = getStatueRank(pd, stKey);
-        bool unlocked = getObjBool(pd, stKey, "isUnlocked") || rank > 0;
-        ItemState st = (rank > 0) ? ItemState::Done : (unlocked ? ItemState::Partial : ItemState::Missing);
-        res.godhome.push_back({hg.nameES, hg.name, "Hall of Gods", "Hall of Gods", st, "Boss", rank});
+        bool isUnlocked = getObjBool(pd, stKey, "isUnlocked");
+        bool completedTier1 = getObjBool(pd, stKey, "completedTier1");
+        bool completedTier2 = getObjBool(pd, stKey, "completedTier2");
+        bool completedTier3 = getObjBool(pd, stKey, "completedTier3");
+        res.godhome.push_back({hg.nameES + ": Desbloqueado", hg.name + ": Unlocked", "Salón de los Dioses", "Hall of Gods", stBool(isUnlocked), "God"});
+        res.godhome.push_back({hg.nameES + ": Sintonizado", hg.name + ": Attuned", "Salón de los Dioses", "Hall of Gods", stBool(completedTier1), "God"});
+        res.godhome.push_back({hg.nameES + ": Ascendido", hg.name + ": Ascended", "Salón de los Dioses", "Hall of Gods", stBool(completedTier2), "God"});
+        res.godhome.push_back({hg.nameES + ": Radiante", hg.name + ": Radiant", "Salón de los Dioses", "Hall of Gods", stBool(completedTier3), "God"});
     }
 
 
@@ -817,38 +817,28 @@ inline SaveAnalysis analyzeHollowKnightSave(const std::string& filePath) {
     res.trueCompletionPercent = totalCount > 0
         ? (100.0f * (float)doneCount / (float)totalCount) : 0.0f;
 
-    // Now add Godhome Statistics header at the beginning, after counting (so stats are not counted)
-    {
-        std::vector<CheckItem> newGodhome;
-        newGodhome.push_back(makeHeader("--- ESTADÍSTICAS HOGAR DE DIOSES ---", "--- GODHOME STATISTICS ---"));
-        newGodhome.push_back({"Panteones Completados", "Pantheons Completed", "Progreso general", "Overall progress", ItemState::Done, std::to_string(res.pantheonsDone) + "/5"});
-        newGodhome.push_back({"Dioses Desbloqueados", "Gods Unlocked", "Salón de los Dioses", "Hall of Gods", ItemState::Done, std::to_string(res.godsUnlocked) + "/44"});
-        newGodhome.push_back({"Dioses Sintonizados (Attuned)", "Gods Attuned", "Rango 1+", "Rank 1+", ItemState::Done, std::to_string(res.godsAttuned) + "/44"});
-        newGodhome.push_back({"Dioses Ascendidos (Ascended)", "Gods Ascended", "Rango 2+", "Rank 2+", ItemState::Done, std::to_string(res.godsAscended) + "/44"});
-        newGodhome.push_back({"Dioses Radiantes (Radiant)", "Gods Radiant", "Rango 3", "Rank 3", ItemState::Done, std::to_string(res.godsRadiant) + "/44"});
-        newGodhome.insert(newGodhome.end(), res.godhome.begin(), res.godhome.end());
-        res.godhome = std::move(newGodhome);
-    }
 
-    // 8. Statistics (Estadísticas del juego) - after trueCompletionPercent is calculated
+    // 8. Statistics (18 estadísticas reales del save file, según hk-database.js)
     res.statistics.clear();
     res.statistics.push_back(makeHeader("--- ESTADÍSTICAS DEL JUEGO ---", "--- GAME STATISTICS ---"));
-    int hours = (int)(res.playTime / 3600.0f);
-    int minutes = (int)((res.playTime - hours * 3600.0f) / 60.0f);
-    res.statistics.push_back({"Tiempo de juego", "Play Time", std::to_string(hours) + "h " + std::to_string(minutes) + "m", std::to_string(hours) + "h " + std::to_string(minutes) + "m", ItemState::Done, ""});
-    res.statistics.push_back({"Geo total", "Total Geo", std::to_string(res.geo), std::to_string(res.geo), ItemState::Done, ""});
-    res.statistics.push_back({"Geo de Sombra", "Shade Geo", std::to_string(res.shadeGeo), std::to_string(res.shadeGeo), ItemState::Done, ""});
-    res.statistics.push_back({"Salud máxima", "Max Health", std::to_string(res.maxHealth) + " / 11", std::to_string(res.maxHealth) + " / 11", ItemState::Done, ""});
-    res.statistics.push_back({"Reserva de orbes", "Orb Reserve", std::to_string(res.mpReserveMax) + " / 330", std::to_string(res.mpReserveMax) + " / 330", ItemState::Done, ""});
-    res.statistics.push_back({"Orbes oníricos", "Dream Orbs", std::to_string(res.dreamOrbs), std::to_string(res.dreamOrbs), ItemState::Done, ""});
-    res.statistics.push_back({"Daño de aguijón", "Nail Damage", std::to_string(res.nailDamage), std::to_string(res.nailDamage), ItemState::Done, ""});
-    res.statistics.push_back({"Hendiduras para amuletos", "Charm Notches", std::to_string(res.charmSlots) + " / 11", std::to_string(res.charmSlots) + " / 11", ItemState::Done, ""});
-    res.statistics.push_back({"Mineral pálido", "Pale Ore", std::to_string(res.paleOre), std::to_string(res.paleOre), ItemState::Done, ""});
-    res.statistics.push_back({"Llaves simples", "Simple Keys", std::to_string(res.simpleKeys), std::to_string(res.simpleKeys), ItemState::Done, ""});
-    res.statistics.push_back({"Larvas rescatadas", "Grubs Rescued", std::to_string(res.grubsCollected) + " / 46", std::to_string(res.grubsCollected) + " / 46", ItemState::Done, ""});
-    res.statistics.push_back({"Rocas de Geo rotas", "Geo Rocks Broken", std::to_string(res.geoRocksBroken) + " / 207", std::to_string(res.geoRocksBroken) + " / 207", ItemState::Done, ""});
-    res.statistics.push_back({"Alma de Acero", "Steel Soul", res.isSteelSoul ? "Activado" : "Desactivado", res.isSteelSoul ? "On" : "Off", ItemState::Done, ""});
-    res.statistics.push_back({"Completado verdadero", "True Completion", std::to_string((int)res.trueCompletionPercent) + "%", std::to_string((int)res.trueCompletionPercent) + "%", ItemState::Done, ""});
+    res.statistics.push_back({"Criaturas encontradas", "Creatures Encountered", "Diario del Cazador", "Hunter's Journal", ItemState::Done, std::to_string(getInt(pd, "journalEntriesCompleted", 0))});
+    res.statistics.push_back({"Notas del Cazador completadas", "Hunter Notes Completed", "Diario del Cazador", "Hunter's Journal", ItemState::Done, std::to_string(getInt(pd, "journalNotesCompleted", 0))});
+    res.statistics.push_back({"Daño base del aguijón", "Base Nail Damage", "Forjaguijones", "Nailsmith", ItemState::Done, std::to_string(getInt(pd, "nailDamage", 5))});
+    res.statistics.push_back({"Geo en la Sombra", "Shade Geo", "Sombra", "Shade", ItemState::Done, std::to_string(getInt(pd, "geoPool", 0))});
+    res.statistics.push_back({"Diarios de errante vendidos", "Wanderer's Journals Sold", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "soldTrinket1", 0))});
+    res.statistics.push_back({"Sellos de Hallownest vendidos", "Hallownest Seals Sold", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "soldTrinket2", 0))});
+    res.statistics.push_back({"Ídolos del rey vendidos", "King's Idols Sold", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "soldTrinket3", 0))});
+    res.statistics.push_back({"Huevos arcanos vendidos", "Arcane Eggs Sold", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "soldTrinket4", 0))});
+    res.statistics.push_back({"Geo total por reliquias vendidas", "Total Geo from Sold Relics", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "relicsSoldTotalGeo", 0))});
+    res.statistics.push_back({"Mineral pálido", "Pale Ore", "Recolectado", "Collected", ItemState::Done, std::to_string(getInt(pd, "ore", 0))});
+    res.statistics.push_back({"Llaves simples", "Simple Keys", "Recolectado", "Collected", ItemState::Done, std::to_string(getInt(pd, "simpleKeys", 0))});
+    res.statistics.push_back({"Huevos pútridos", "Rancid Eggs", "Recolectado", "Collected", ItemState::Done, std::to_string(getInt(pd, "rancidEggs", 0))});
+    res.statistics.push_back({"Huevos pútridos vendidos", "Rancid Eggs Sold", "Jiji", "Jiji", ItemState::Done, std::to_string(getInt(pd, "jinnEggsSold", 0))});
+    res.statistics.push_back({"Flores delicadas destruidas", "Delicate Flowers Destroyed", "Xun", "Xun", ItemState::Done, std::to_string(getInt(pd, "xunFlowerBrokeTimes", 0))});
+    res.statistics.push_back({"Interactuables", "Interactables", "Exploración", "Exploration", ItemState::Done, std::to_string(getInt(pd, "itemsDiscovered", 0))});
+    res.statistics.push_back({"Saldo en el banco", "Bank Account Balance", "Banquera", "Banker", ItemState::Done, std::to_string(getInt(pd, "bankerBalance", 0))});
+    res.statistics.push_back({"Veces derrotado: Defensor Blanco", "White Defender Times Defeated", "Hogar de Dioses", "Godhome", ItemState::Done, std::to_string(getInt(pd, "whiteDefenderDefeats", 0)) + " / 5"});
+    res.statistics.push_back({"Veces derrotado: Príncipe Gris Zote", "Grey Prince Zote Times Defeated", "Hogar de Dioses", "Godhome", ItemState::Done, std::to_string(getInt(pd, "greyPrinceDefeats", 0)) + " / 10"});
 
     return res;
 }

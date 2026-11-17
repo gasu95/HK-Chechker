@@ -23,6 +23,7 @@ struct UIAssets {
     SDL_Texture* geoIcon = nullptr;
     SDL_Texture* geoShade = nullptr;
     SDL_Texture* fleur = nullptr;
+    SDL_Texture* hkTitleBanner = nullptr;
     SDL_Texture* attuned = nullptr;
     SDL_Texture* ascended = nullptr;
     SDL_Texture* radiant = nullptr;
@@ -322,23 +323,38 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
 
     drawRect(ren, 0, 0, 1280, 72, headerBg);
     drawBorder(ren, 0, 71, 1280, 1, hkBlue);
-    drawText(ren, fontLg, data.fileName, 36, 20, white);
+    int fileNameWidth = drawText(ren, fontLg, data.fileName, 36, 20, white);
+
+    // HK Checker title banner — full image, proportional scale, centered in header
+    if (ui.hkTitleBanner) {
+        int titleLeft = 36 + fileNameWidth + 16; // 16px margin after fileName
+        int titleRight = 1120 - 16; // 16px margin before language button
+        int titleSpace = titleRight - titleLeft;
+        if (titleSpace > 50) {
+            // Query real texture dimensions
+            int texW = 0, texH = 0;
+            SDL_QueryTexture(ui.hkTitleBanner, nullptr, nullptr, &texW, &texH);
+            if (texW > 0 && texH > 0) {
+                // Scale proportionally to fit within header (72px tall) and available width
+                int maxH = 60; // leave 6px top/bottom margin in 72px header
+                int maxW = titleSpace;
+                float scaleH = (float)maxH / texH;
+                float scaleW = (float)maxW / texW;
+                float scale = (scaleH < scaleW) ? scaleH : scaleW;
+                int bannerW = (int)(texW * scale);
+                int bannerH = (int)(texH * scale);
+                int bannerX = titleLeft + (titleSpace - bannerW) / 2; // centered
+                int bannerY = (72 - bannerH) / 2; // vertically centered in header
+                SDL_SetTextureAlphaMod(ui.hkTitleBanner, 255);
+                SDL_Rect bannerDst{bannerX, bannerY, bannerW, bannerH};
+                SDL_RenderCopy(ren, ui.hkTitleBanner, nullptr, &bannerDst);
+            }
+        }
+    }
 
     drawRect(ren, 1120, 16, 124, 40, hkHighlight);
     drawBorder(ren, 1120, 16, 124, 40, gold);
     drawText(ren, fontSm, isES ? "[-] ES / EN" : "[-] EN / ES", 1136, 26, gold);
-
-    char pctBuf[64];
-    snprintf(pctBuf, sizeof(pctBuf), isES ? "OFICIAL: %.1f%% / 112%%"
-                                          : "GAME: %.1f%% / 112%%",
-             data.completionPercent);
-    drawText(ren, fontMd, pctBuf, 860, 22,
-             data.completionPercent >= 112.0f ? green : gold, true);
-
-    char trueBuf[64];
-    snprintf(trueBuf, sizeof(trueBuf), isES ? "REAL: %.1f%%" : "TRUE: %.1f%%", data.trueCompletionPercent);
-    drawText(ren, fontMd, trueBuf, 1095, 22,
-             data.trueCompletionPercent >= 100.0f ? green : SDL_Color{110, 195, 245, 255}, true);
 
     const std::vector<std::string> tabsES = {
         "MAIN", "ESENCIALES", "DIARIO",
@@ -422,11 +438,10 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
                      (data.isSteelSoul ? (isES ? "  [ALMA DE ACERO]" : "  [STEEL SOUL]") : ""),
                      667, sbY + 44, white);
 
-        // Completion %
+        // Completion % (compact, no "Oficial/Real" labels)
         char compLine[128];
         snprintf(compLine, sizeof(compLine),
-                 isES ? "Oficial: %.1f%% / 112%%   |   True Completion: %.1f%%"
-                      : "Game Completion: %.1f%% / 112%%   |   True Completion: %.1f%%",
+                 "%.1f%% / 112%%   |   %.1f%%",
                  data.completionPercent, data.trueCompletionPercent);
         drawText(ren, fontSm, compLine, 635, sbY + 74, SDL_Color{120, 195, 245, 255});
     }
@@ -492,7 +507,7 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
             const auto& item = (*src)[realIdx];
             bool isSelected = (i == selectedRowIndex);
 
-                        if (item.isHeader) {
+            if (item.isHeader) {
                 int subDone = 0, subTot = 0;
                 for (int k = realIdx + 1; k < (int)src->size() && !(*src)[k].isHeader; ++k) {
                     if ((*src)[k].state != ItemState::Unavailable) {
@@ -507,8 +522,94 @@ void renderAnalysisScreen(SDL_Renderer* ren, const UIAssets& ui,
                 std::string cleanTitle = item.name(isES);
                 if (cleanTitle.size() > 8 && cleanTitle.substr(0, 4) == "--- ")
                     cleanTitle = cleanTitle.substr(4, cleanTitle.size() - 8);
-                std::string arrow = item.isCollapsed ? "\xE2\x96\xB6  " : "\xE2\x96\xBC  ";
-                drawText(ren, fontMd, arrow + cleanTitle, 76, y + 19, isSelected ? white : gold);
+                std::string arrow = item.isCollapsed ? "\xE2\x96\xB6 " : "\xE2\x96\xBC ";
+
+                // Layout: [arrow] [gap] [fleur] [title] [fleur] [gap] [badge]
+                // Arrow aligned with item glyphs at X=74
+                // Header box: top = y+10, height = 42, vertical center = y+31
+                int arrowX = 74;
+                int headerTop = y + 10;
+                int headerHeight = 42;
+                int centerY = headerTop + headerHeight / 2; // y + 31
+
+                // Measure title dimensions using TTF_SizeUTF8 (no surface needed)
+                int textW = 0;
+                int textH = 0;
+                TTF_SizeUTF8(fontMd, cleanTitle.c_str(), &textW, &textH);
+                int hTitleW = textW;
+
+                // Text Y positioned so its vertical center aligns with centerY
+                int textY = centerY - textH / 2;
+
+                int itemRight = 1224; // 56 + 1168
+                int badgeW = (subTot > 0) ? 150 : 0; // space for progress badge on right
+
+                // Margins between elements
+                int arrowFleurGap = 10; // small gap between arrow and first fleur
+                int fleurTitleGap = 8;  // small gap between fleur and title
+                int badgeGap = 10;      // small gap between last fleur and badge
+
+                // Dynamic layout: fleurs fill available space
+                int afterArrow = arrowX + 20 + arrowFleurGap; // arrow width + gap
+                int beforeBadge = itemRight - badgeW - badgeGap;
+                int spaceForTitleAndFleurs = beforeBadge - afterArrow;
+
+                // Title centered in the available space
+                int hTitleX = afterArrow + (spaceForTitleAndFleurs - hTitleW) / 2;
+
+                // Left fleur: from after arrow gap to title (with small gap)
+                int leftFleurStart = afterArrow;
+                int leftFleurEnd = hTitleX - fleurTitleGap;
+
+                // Right fleur: from title end to before badge gap
+                int rightFleurStart = hTitleX + hTitleW + fleurTitleGap;
+                int rightFleurEnd = beforeBadge;
+
+                // Arrow on the left, vertically centered
+                drawText(ren, fontMd, arrow, arrowX, textY, isSelected ? white : gold);
+
+                // Draw ornamental fleur divisors instead of plain lines
+                // Scale the fleur PNG to fit the available space, centered vertically at centerY
+                int fleurImgH = 30; // slightly shorter than headerHeight (42) for margins
+                int fleurSrcW = 512, fleurSrcH = 128; // known dimensions of fleur-divide.png
+
+                // Left fleur divisor
+                int leftFleurW = leftFleurEnd - leftFleurStart;
+                if (leftFleurW > 10 && ui.fleur) {
+                    float leftScale = (float)fleurImgH / fleurSrcH;
+                    int leftDrawW = (int)(fleurSrcW * leftScale);
+                    // Clamp to available space; if wider, scale down to fit
+                    if (leftDrawW > leftFleurW) {
+                        leftScale = (float)leftFleurW / fleurSrcW;
+                        leftDrawW = leftFleurW;
+                        fleurImgH = (int)(fleurSrcH * leftScale);
+                    }
+                    int leftDrawH = fleurImgH;
+                    int leftFleurX = leftFleurStart;
+                    int leftFleurY = centerY - leftDrawH / 2;
+                    SDL_SetTextureAlphaMod(ui.fleur, 180);
+                    drawTex(ren, ui.fleur, leftFleurX, leftFleurY, leftDrawW, leftDrawH, 180);
+                }
+
+                // Title text, vertically centered
+                drawText(ren, fontMd, cleanTitle, hTitleX, textY, isSelected ? white : gold);
+
+                // Right fleur divisor
+                int rightFleurW = rightFleurEnd - rightFleurStart;
+                if (rightFleurW > 10 && ui.fleur) {
+                    float rightScale = (float)fleurImgH / fleurSrcH;
+                    int rightDrawW = (int)(fleurSrcW * rightScale);
+                    if (rightDrawW > rightFleurW) {
+                        rightScale = (float)rightFleurW / fleurSrcW;
+                        rightDrawW = rightFleurW;
+                        fleurImgH = (int)(fleurSrcH * rightScale);
+                    }
+                    int rightDrawH = fleurImgH;
+                    int rightFleurX = rightFleurStart;
+                    int rightFleurY = centerY - rightDrawH / 2;
+                    SDL_SetTextureAlphaMod(ui.fleur, 180);
+                    drawTex(ren, ui.fleur, rightFleurX, rightFleurY, rightDrawW, rightDrawH, 180);
+                }
 
                 if (subTot > 0) {
                     bool allOk = (subDone == subTot);
@@ -605,6 +706,10 @@ int main(int argc, char* argv[]) {
     ui.geoIcon = IMG_LoadTexture(ren, "romfs:/icons/geo.png");
     ui.geoShade = IMG_LoadTexture(ren, "romfs:/icons/geo-shade.png");
     ui.fleur = IMG_LoadTexture(ren, "romfs:/icons/fleur-divide.png");
+    ui.hkTitleBanner = IMG_LoadTexture(ren, "romfs:/icons/hk-checker-title.png");
+    if (!ui.hkTitleBanner) {
+        fprintf(stderr, "Failed to load hk-checker-title.png: %s\n", IMG_GetError());
+    }
     ui.attuned = IMG_LoadTexture(ren, "romfs:/icons/attuned.png");
     ui.ascended = IMG_LoadTexture(ren, "romfs:/icons/ascended.png");
     ui.radiant = IMG_LoadTexture(ren, "romfs:/icons/radiant.png");
@@ -884,6 +989,7 @@ exit_app:
     if (ui.geoIcon) SDL_DestroyTexture(ui.geoIcon);
     if (ui.geoShade) SDL_DestroyTexture(ui.geoShade);
     if (ui.fleur) SDL_DestroyTexture(ui.fleur);
+    if (ui.hkTitleBanner) SDL_DestroyTexture(ui.hkTitleBanner);
     if (ui.attuned) SDL_DestroyTexture(ui.attuned);
     if (ui.ascended) SDL_DestroyTexture(ui.ascended);
     if (ui.radiant) SDL_DestroyTexture(ui.radiant);
