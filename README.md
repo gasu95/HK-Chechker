@@ -2,118 +2,63 @@
 
 [🇪🇸 Versión en español](README.es.md)
 
-> **Hollow Knight Completion Checker for Nintendo Switch** — Analyze your save files and track your progress toward 112% game completion.
+> **Hollow Knight Completion Checker for Nintendo Switch** — Analiza tus partidas y rastrea tu progreso hacia el 112% del juego.
 
 ---
 
 ## 🎮 Overview
 
-HKChecker is a **Nintendo Switch homebrew application** that reads Hollow Knight save files directly from your console's storage and displays a detailed breakdown of your game completion percentage. It works completely offline, with no internet connection required.
+**HKChecker** es una aplicación homebrew para Nintendo Switch que lee archivos de guardado de *Hollow Knight* (directamente del almacenamiento de la consola, respaldos de JKSV o archivos `.dat`) de forma totalmente offline. Es una adaptación de la herramienta web [Hollow Knight Completion Check](https://github.io) de [ReznoRMichael](https://github.com).
 
-It is a port and enhancement of the popular web-based [Hollow Knight Completion Check](https://reznormichael.github.io/hollow-knight-completion-check/) by [ReznoRMichael](https://github.com/ReznoRMichael).
-
-### ✨ Features
-
-- **8 tabs** matching the web version: Main, Essentials %, Achievements, Journal, Collectibles, Geo Caches, Secrets, Godhome
-- **Bilingual UI** (English/Spanish) with instant language switching via `-` button
-- **Anti-spoiler system**: locations and hints hidden by default, reveal by touching rows
-- **Elderbug hints** in both languages to guide your next steps
-- **Complete database**: 40 charms, 46 grubs, 15 whispering roots, 43 relics, 20 rancid eggs, 13 geo chests, 207 geo rocks, 158 journal entries, 44 God Statues, and more
-- **Touch, button, and joystick** support
-- **Offline-first design**: reads save files directly from your Switch's internal storage and SD card
+### ✨ Características principales
+- **8 pestañas completas**: `MAIN`, `ESSENTIALS`, `JOURNAL`, `COLLECTIBLES`, `GEO CACHES`, `SECRETS`, `GODMASTER` y `STATISTICS`.
+- **Detección automática** de los 4 espacios de guardado (`user1.dat` – `user4.dat`).
+- **Interfaz bilingüe** (Inglés / Español) con selector rápido (`-`) y **sistema anti-spoilers** para ocultar elementos no descubiertos.
+- **Base de datos completa** (~400 elementos: amuletos, larvas, raíces, reliquias, estatuas de dioses, etc.) y **controles híbridos** (botones, sticks y pantalla táctil).
 
 ---
 
-## 📋 Credits
+## 🚀 Instalación y Uso
 
-This project is based on the excellent work of:
-
-- **[ReznoRMichael](https://github.com/ReznoRMichael)** — Original [Hollow Knight Completion Check](https://reznormichael.github.io/hollow-knight-completion-check/) web application and database. The complete item database, completion logic, and hint system are derived from this project.
-
-Additional thanks to:
-
-- **[Team Switch](https://github.com/switchbrew/switchbrew)** — libnx and devkitA64 for Switch homebrew development
-- **[SDL2](https://www.libsdl.org/)** — Cross-platform multimedia library
-- **[Hollow Knight Wiki (ES)](https://hollowknight.fandom.com/es/wiki/Hollow_Knight_Wiki)** — Spanish translations reference
+1. Descarga `HKChecker.nro` desde la sección de [Releases](https://github.com).
+2. Colócalo en tu tarjeta SD en: `sdmc:/switch/HKChecker/HKChecker.nro`.
+3. **Modo de anulación de título (Importante):** Para permitir que la app lea los datos de guardado internos de la consola, abre el Menú Homebrew **manteniendo presionado `R` al iniciar cualquier juego** (no lo abras desde el modo Applet / Álbum).
+4. El modo Applet solo permite analizar archivos `.dat` exportados previamente (ej. vía JKSV en `sdmc:/JKSV/`).
 
 ---
 
-## 🛠️ Building
+## 🎮 Controles
 
-### Prerequisites
+| Control | Navegador de Archivos | Vista de Análisis |
+| :--- | :--- | :--- |
+| `Stick / D-Pad` | Mover selección | Navegar filas (Arriba/Abajo) y pestañas (Izquierda/Derecha) |
+| `L` / `R` | `L`: Montar datos internos de Switch | Cambiar entre las 8 pestañas |
+| `A` | Abrir carpeta o analizar archivo | Plegar/desplegar sección o revelar fila seleccionada |
+| `B` | Ir al directorio padre | Volver al explorador de archivos |
+| `X` | — | Cambiar filtro (`ALL` / `MISSING`) |
+| `Y` | — | Mostrar / Ocultar todos los spoilers |
+| `Touch` | Seleccionar y desplazar | Cambiar pestañas o revelar filas |
+| `-` / `+` | Cambiar idioma (`EN`/`ES`) / Salir | Cambiar idioma (`EN`/`ES`) / Salir |
 
-- **[devkitPro](https://devkitpro.org/)** toolchain for Nintendo Switch (libnx, devkitA64)
-- **SDL2, SDL2_image, SDL2_ttf** portlibs for Switch
-- **Make** (included with devkitPro)
+---
 
-On Windows, install the [devkitPro installer](https://devkitpro.org/wiki/Getting_Started) which includes all Switch dependencies.
+## 🛠️ Compilación y Estructura
 
-### Compile
+Requiere la cadena de herramientas [devkitPro](https://devkitpro.org) (`libnx`, `devkitA64`), librerías SDL2 (`switch-sdl2`, `switch-sdl2_image`, `switch-sdl2_ttf`) y `make`:
 
 ```bash
-cd HKChecker
+git clone https://github.com
+cd HK-Checker
 make
 ```
 
-This produces `HKChecker.nro` in the project root, ready to transfer to your Switch.
-
-To clean and rebuild:
-
-```bash
-make clean
-make
-```
+Estructura principal del repositorio:
+- `source/main.cpp` (UI SDL2 y navegación), `source/hk_analyzer.hpp` (evaluación de partidas), `source/hk_web_db.hpp` (base de datos) y recursos gráficos/fuentes en `romfs/`.
 
 ---
 
-## 📁 Project Structure
+## 📋 Créditos y Licencia
 
-```
-HKChecker/
-├── Makefile              # Build configuration
-├── icon.jpg              # App icon 256x256
-├── source/
-│   ├── main.cpp          # UI, navigation, rendering
-│   ├── hk_analyzer.hpp   # Save file parsing, item evaluation
-│   └── hk_web_db.hpp     # Complete item database (~400 items)
-└── romfs/
-    ├── fontello.ttf      # Custom font
-    └── icons/            # UI icons (masks, geo, soul, etc.)
-```
+Basado en el trabajo original de **[ReznoRMichael](https://github.com)** ([Hollow Knight Completion Check](https://github.io)), con soporte de `libnx` ([Team Switch](https://github.com)), SDL2 y la Wiki de Hollow Knight (ES). 
 
----
-
-## 🎮 Controls
-
-| Control | Action |
-|---------|--------|
-| `Stick/D-pad` | Navigate rows |
-| `L/R` or `Stick` | Switch tabs |
-| `A` | Analyze save |
-| `B` | Go back |
-| `-` | Toggle language (ES/EN) |
-| `X` | Toggle filter (Missing/All) |
-| `Y` | Toggle spoilers |
-| `Touch` | Tap rows to reveal spoilers |
-
----
-
-## 📖 How it works
-
-The app scans the Switch's internal storage and SD card for Hollow Knight save files (`user1.dat`). Once loaded, it decompresses the ZIP archive, parses the JSON save data, and evaluates each item against the complete database to determine what you've collected and what's still missing.
-
-**No internet connection is required** — all processing happens locally on your Switch.
-
----
-
-## ⚠️ Disclaimer
-
-This project is **not affiliated with Team Cherry** or **Hollow Knight**. All game assets and names are property of Team Cherry. This tool is for personal use only.
-
----
-
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE).
-
-The original web application database and completion logic are based on [ReznoRMichael/hollow-knight-completion-check](https://github.com/ReznoRMichael/hollow-knight-completion-check), used with permission and attribution.
+*Distribuido bajo la [Licencia MIT](LICENSE). No afiliado con Team Cherry.*
